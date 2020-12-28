@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">OnlineShoppingIsa</string>
+    <string name="data_of_birth">Data of Birth</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="read_more">...more</string>
+    <string name="read_less">...less</string>
+    <string name="mobile_firebase">Mobile</string>
+    <string name="fashion_firebase">Fashion</string>
+    <string name="product_type_firebase">ProductType</string>
+    <string name="labtop_firebase">Labtop</string>
+    <string name="memory_of_ram">Memory Of Ram:</string>
+</resources>

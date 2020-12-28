@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "260246066372",
+    "project_id": "onlineshoppingisa-4c11c",
+    "storage_bucket": "onlineshoppingisa-4c11c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:260246066372:android:0607a533a07f11aefaa591",
+        "android_client_info": {
+          "package_name": "com.example.onlineshoppingisa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "260246066372-64m717gfjv13pjjk65mu3598c7mhq25s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.onlineshoppingisa",
+            "certificate_hash": "49840e33b31cb069e27c60bdbd66bfeb9a1e6fd5"
+          }
+        },
+        {
+          "client_id": "260246066372-vim5lkisp1l1j2ft2bd7cjcugjg2blmt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD38KQK9LaKzR6B5QKepCZy2nJMScGUATI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "260246066372-vim5lkisp1l1j2ft2bd7cjcugjg2blmt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

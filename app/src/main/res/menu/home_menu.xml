@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/home_menu_search"
+        android:icon="@drawable/ic_baseline_search_24"
+        android:title="Search"
+        app:showAsAction="always|collapseActionView"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"/>
+
+    <item
+        android:visible="false"
+        android:id="@+id/home_menu_voice"
+        android:title="Voice"
+        app:showAsAction="always|collapseActionView"
+        android:icon="@drawable/ic_baseline_keyboard_voice_24"
+        />
+
+    <item android:visible="false"
+        android:id="@+id/home_menu_scan"
+        android:title="Scan"
+        app:showAsAction="always|collapseActionView"
+        android:icon="@drawable/ic_baseline_center_focus_weak_24"/>
+
+    <item android:id="@+id/home_menu_shopping_cart"
+        android:icon="@drawable/ic_baseline_shopping_cart_24"
+        app:showAsAction="always|collapseActionView"
+        android:title="Shopping Cart"/>
+
+</menu>
