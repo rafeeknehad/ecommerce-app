@@ -10,8 +10,6 @@ import androidx.room.Query;
 import java.util.List;
 
 import io.reactivex.Completable;
-import io.reactivex.Observable;
-import io.reactivex.Single;
 
 
 @Dao
@@ -24,5 +22,5 @@ public interface ProductDao {
     void delete(ProductRoom productRoom);
 
     @Query("select * from ProductRoom where userId like :userID")
-    Single<List<ProductRoom>> getAllData(String userID);
+    LiveData<List<ProductRoom>> getAllData(String userID);
 }

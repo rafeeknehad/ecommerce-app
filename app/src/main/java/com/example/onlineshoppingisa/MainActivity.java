@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     //final
     private static final String TAG = "MainActivity";
     private static final int REQUEST_CODE = 1;
-
+    public static HomeFragment homeFragment;
     //ui
     private TextInputLayout emailTxt;
     private TextInputLayout passTxt;
@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
     private Button signinBtn;
     private TextView forgetPass;
     private CheckBox rememberMe;
-
     //variable
     private MainActivity2Model mainActivity2Model;
     private List<User> allDataOfUsers;

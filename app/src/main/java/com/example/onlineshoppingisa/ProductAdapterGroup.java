@@ -66,6 +66,7 @@ public class ProductAdapterGroup extends RecyclerView.Adapter<ProductAdapterGrou
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
+                System.out.println("tttttttttttttttttttttttttt "+constraint);
                 List<ProductDetailCardViewGroup> filterList = new ArrayList<>();
                 if (constraint == null || constraint.length() == 0) {
                     filterList.addAll(productDetailCardViewGroupsFull);

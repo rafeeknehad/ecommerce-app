@@ -13,6 +13,11 @@
             android:id="@+id/drawer_menu_profile"
             android:icon="@drawable/ic_baseline_account_circle_24"
             android:title="Profile" />
+
+        <item
+            android:id="@+id/my_cart"
+            android:icon="@drawable/ic_baseline_shopping_cart_24"
+            android:title="My Cart" />
     </group>
 
     <item android:title="Connect">
