@@ -113,4 +113,10 @@ public class ProductAdapterGroup extends RecyclerView.Adapter<ProductAdapterGrou
             recyclerView = itemView.findViewById(R.id.prodduct_detail_cardview_group_recy);
         }
     }
+
+    public void setList(List<ProductDetailCardViewGroup> list)
+    {
+        this.productDetailCardViewGroups = list;
+        notifyDataSetChanged();;
+    }
 }

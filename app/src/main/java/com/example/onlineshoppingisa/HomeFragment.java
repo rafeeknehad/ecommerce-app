@@ -53,8 +53,11 @@ public class HomeFragment extends Fragment {
     public static ProductAdapterGroup productAdapterGroup;
 
 
-
     public HomeFragment() {
+    }
+
+    public HomeFragment(ArrayList<MobileDetails> mobileDetailsArrayList, ArrayList<FashionDetails> fashionDetailsArrayList,
+                        ArrayList<LabtopDetails> labtopDetailsArrayList) {
         this.mobileDetailsArrayList = mobileDetailsArrayList;
         this.fashionDetailsArrayList = fashionDetailsArrayList;
         this.labtopDetailsArrayList = labtopDetailsArrayList;
@@ -72,22 +75,28 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment, container, false);
         recyclerView = view.findViewById(R.id.home_fragment_product);
+        productAdapterGroup = new ProductAdapterGroup(getActivity(), productDetailCardViewGroups);
+        recyclerView.setAdapter(productAdapterGroup);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
+        recyclerView.setHasFixedSize(true);
+        initailProductDetailCardViews(getActivity(),mobileDetailsArrayList,fashionDetailsArrayList,labtopDetailsArrayList);
+
         return view;
     }
 
-    public void initailProductDetailCardViews(ArrayList<MobileDetails> mobileDetailsArrayList, ArrayList<FashionDetails> fashionDetailsArrayList, ArrayList<LabtopDetails> labtopDetailsArrayList) {
+    public void initailProductDetailCardViews(Context context,ArrayList<MobileDetails> mobileDetailsArrayList, ArrayList<FashionDetails> fashionDetailsArrayList, ArrayList<LabtopDetails> labtopDetailsArrayList) {
         for (int i = 0; i < 10; i++) {
             MobileDetails mobileDetails = mobileDetailsArrayList.get(i);
             LabtopDetails labtopDetails = labtopDetailsArrayList.get(i);
             FashionDetails fashionDetails = fashionDetailsArrayList.get(i);
 
-            ProductDetailCardView mobileItem = new ProductDetailCardView(getString(R.string.mobile_firebase), mobileDetails.getName(), mobileDetails.getPrice(), mobileDetails.getRating(),
+            ProductDetailCardView mobileItem = new ProductDetailCardView(context.getString(R.string.mobile_firebase), mobileDetails.getName(), mobileDetails.getPrice(), mobileDetails.getRating(),
                     mobileDetails.getImage());
 
-            ProductDetailCardView fashionItem = new ProductDetailCardView(getString(R.string.fashion_firebase), fashionDetails.getName(), fashionDetails.getPrice(), fashionDetails.getRating(),
+            ProductDetailCardView fashionItem = new ProductDetailCardView(context.getString(R.string.fashion_firebase), fashionDetails.getName(), fashionDetails.getPrice(), fashionDetails.getRating(),
                     fashionDetails.getImage());
 
-            ProductDetailCardView labtopItem = new ProductDetailCardView(getString(R.string.labtop_firebase), labtopDetails.getName(), labtopDetails.getPrice(), labtopDetails.getRating(),
+            ProductDetailCardView labtopItem = new ProductDetailCardView(context.getString(R.string.labtop_firebase), labtopDetails.getName(), labtopDetails.getPrice(), labtopDetails.getRating(),
                     labtopDetails.getImage());
 
             allProductDetailCardViews.add(mobileItem);
@@ -98,24 +107,18 @@ public class HomeFragment extends Fragment {
             fashionProductDetailCardViews.add(fashionItem);
             labtopProductDetailCardViews.add(labtopItem);
         }
-        createAdapterGroup();
+        createAdapterGroup(context);
     }
 
-    private void createAdapterGroup() {
-        productDetailCardViewGroups.add(new ProductDetailCardViewGroup(getString(R.string.mobile_firebase), mobileProductDetailCardViews));
-        productDetailCardViewGroups.add(new ProductDetailCardViewGroup(getString(R.string.fashion_firebase), fashionProductDetailCardViews));
-        productDetailCardViewGroups.add(new ProductDetailCardViewGroup(getString(R.string.labtop_firebase), labtopProductDetailCardViews));
+    private void createAdapterGroup(Context context) {
+        productDetailCardViewGroups.add(new ProductDetailCardViewGroup(context.getString(R.string.mobile_firebase), mobileProductDetailCardViews));
+        productDetailCardViewGroups.add(new ProductDetailCardViewGroup(context.getString(R.string.fashion_firebase), fashionProductDetailCardViews));
+        productDetailCardViewGroups.add(new ProductDetailCardViewGroup(context.getString(R.string.labtop_firebase), labtopProductDetailCardViews));
         setDataForProdructAdapter(productDetailCardViewGroups);
     }
 
     public void setDataForProdructAdapter(List<ProductDetailCardViewGroup> productDetailCardViewGroups) {
-        System.out.println("kkkkkkkkkkkkkkkkkkkkkkkkkk "+productDetailCardViewGroups.size()+" "+productDetailCardViewGroups.get(0).getProductTypeList());
-        productAdapterGroup = new ProductAdapterGroup(getActivity(), productDetailCardViewGroups);
-        recyclerView.setAdapter(productAdapterGroup);
-        recyclerView.setNestedScrollingEnabled(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
-        recyclerView.setHasFixedSize(true);
+        System.out.println("kkkkkkkkkkkkkkkkkkkkkkkkkk "+productDetailCardViewGroups.size()+" "+productDetailCardViewGroups.get(0).getProductTypeList().size());
+        productAdapterGroup.setList(productDetailCardViewGroups);
     }
-
-
 }

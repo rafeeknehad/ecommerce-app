@@ -31,7 +31,6 @@ import com.example.onlineshoppingisa.models.ProductDetailCardView;
 import com.example.onlineshoppingisa.models.ProductDetailCardViewGroup;
 import com.example.onlineshoppingisa.models.ProductType;
 import com.example.onlineshoppingisa.roomdatabase.ProductDataBaseModel;
-import com.example.onlineshoppingisa.roomdatabase.ProductRoom;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -87,13 +86,10 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
     private List<ProductDetailCardViewGroup> productUserDetailCardViewGroups;
 
 
-    private List<ProductDetailCardView> allUserProductDetailCardViews;
-    private List<ProductDetailCardView> mobileUserProductDetailCardViews;
-    private List<ProductDetailCardView> labtopUserProductDetailCardViews;
-    private List<ProductDetailCardView> fashionUserProductDetailCardViews;
     private ProductDataBaseModel productDataBaseModel;
 
     private HomeFragment homeFragment;
+    private MyCartFeagment myCartFeagment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,13 +111,8 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
         fashionProductDetailCardViews = new ArrayList<>();
         productDetailCardViewGroups = new ArrayList<>();
 
-        allUserProductDetailCardViews = new ArrayList<>();
-        mobileUserProductDetailCardViews = new ArrayList<>();
-        labtopUserProductDetailCardViews = new ArrayList<>();
-        fashionUserProductDetailCardViews = new ArrayList<>();
-        productUserDetailCardViewGroups = new ArrayList<>();
 
-        homeFragment = new HomeFragment();
+        productUserDetailCardViewGroups = new ArrayList<>();
 
         //initail xml
         productTypeRecyclerView = findViewById(R.id.main_activity3_recycler_view_product_type);
@@ -139,8 +130,13 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
                 fashionDetailsArrayList = new ArrayList<>(allCategory.getFashionDetailsList());
                 labtopDetailsArrayList = new ArrayList<>(allCategory.getLabtopDetails());
                 productTypeArrayList = new ArrayList<>(allCategory.getProductTypeList());
-                homeFragment.initailProductDetailCardViews(mobileDetailsArrayList,fashionDetailsArrayList,labtopDetailsArrayList);
-                initailProductDetailCardViews();
+                homeFragment = new HomeFragment(mobileDetailsArrayList, fashionDetailsArrayList, labtopDetailsArrayList);
+                if (savedInstanceState == null) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.main_activity3_fragment, homeFragment)
+                            .commit();
+                    navigationView.setCheckedItem(R.id.drawer_menu_home);
+                }
+                myCartFeagment = new MyCartFeagment(mobileDetailsArrayList, fashionDetailsArrayList, labtopDetailsArrayList);
                 setDataForTypeAdapter();
             }
         });
@@ -152,13 +148,6 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
         navigationView.setNavigationItemSelectedListener(this);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
-        if(savedInstanceState == null)
-        {
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_activity3_fragment,homeFragment)
-                    .commit();
-            navigationView.setCheckedItem(R.id.drawer_menu_home);
-        }
-
     }
 
     private void setDataForTypeAdapter() {
@@ -184,7 +173,6 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
         menuItem = menu.findItem(R.id.home_menu_search);
         menuItem1 = menu.findItem(R.id.home_menu_voice);
         menuItem2 = menu.findItem(R.id.home_menu_scan);
-        menuItem3 = menu.findItem(R.id.home_menu_shopping_cart);
         return true;
     }
 
@@ -210,7 +198,6 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
                     public boolean onMenuItemActionExpand(MenuItem item) {
                         menuItem1.setVisible(true);
                         menuItem2.setVisible(true);
-                        menuItem3.setVisible(false);
                         return true;
                     }
 
@@ -218,7 +205,6 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
                     public boolean onMenuItemActionCollapse(MenuItem item) {
                         menuItem1.setVisible(false);
                         menuItem2.setVisible(false);
-                        menuItem3.setVisible(true);
                         return true;
                     }
                 });
@@ -231,67 +217,10 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
                 scan();
                 break;
 
-            case R.id.home_menu_shopping_cart:
-                showUserProduct(firebaseUser.getUid());
-                break;
-
             default:
                 return false;
         }
         return true;
-    }
-
-    private void showUserProduct(String uid) {
-        productDataBaseModel = ViewModelProviders.of(MainActivity3.this).get(ProductDataBaseModel.class);
-        productDataBaseModel.getLiveDataOfUser(uid).observe(MainActivity3.this, new Observer<List<ProductRoom>>() {
-            @Override
-            public void onChanged(List<ProductRoom> productRooms) {
-                for (ProductRoom productRoom : productRooms) {
-                    if (productRoom.getProductId().contains("labtop")) {
-                        for (LabtopDetails labtopDetails : labtopDetailsArrayList) {
-                            if (labtopDetails.getKey().equals(productRoom.getProductId())) {
-                                labtopUserProductDetailCardViews.add(new ProductDetailCardView(getString(R.string.labtop_firebase), labtopDetails.getName(),
-                                        labtopDetails.getPrice(), labtopDetails.getRating(), labtopDetails.getImage()));
-                                break;
-                            }
-                        }
-                    }
-                    if (productRoom.getProductId().contains("mobile")) {
-                        for (MobileDetails mobileDetails : mobileDetailsArrayList) {
-                            if (mobileDetails.getKey().equals(productRoom.getProductId())) {
-                                mobileUserProductDetailCardViews.add(new ProductDetailCardView(getString(R.string.mobile_firebase), mobileDetails.getName(),
-                                        mobileDetails.getPrice(), mobileDetails.getRating(), mobileDetails.getImage()));
-                                break;
-                            }
-                        }
-                    }
-                    if (productRoom.getProductId().contains("Fashion")) {
-                        for (FashionDetails fashionDetails : fashionDetailsArrayList) {
-                            if (fashionDetails.getKey().equals(productRoom.getProductId())) {
-                                fashionUserProductDetailCardViews.add(new ProductDetailCardView(getString(R.string.fashion_firebase), fashionDetails.getName(),
-                                        fashionDetails.getPrice(), fashionDetails.getRating(), fashionDetails.getImage()));
-                                break;
-                            }
-                        }
-                    }
-                }
-                allUserProductDetailCardViews.addAll(mobileUserProductDetailCardViews);
-                allUserProductDetailCardViews.addAll(labtopUserProductDetailCardViews);
-                allUserProductDetailCardViews.addAll(fashionUserProductDetailCardViews);
-                System.out.println("ssssssssssssssssssssssssssssssssssss " + productRooms.size());
-                if (mobileUserProductDetailCardViews.size() != 0) {
-                    productUserDetailCardViewGroups.add(new ProductDetailCardViewGroup(getString(R.string.mobile_firebase), mobileUserProductDetailCardViews));
-                }
-                if (fashionUserProductDetailCardViews.size() != 0) {
-                    productUserDetailCardViewGroups.add(new ProductDetailCardViewGroup(getString(R.string.fashion_firebase), fashionUserProductDetailCardViews));
-                }
-                if (labtopUserProductDetailCardViews.size() != 0) {
-                    productUserDetailCardViewGroups.add(new ProductDetailCardViewGroup(getString(R.string.labtop_firebase), labtopUserProductDetailCardViews));
-                }
-                //setDataForProdructAdapter(productUserDetailCardViewGroups);
-            }
-        });
-
     }
 
 
@@ -361,6 +290,8 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
     @Override
     public void productTypeAdapterSetOnItemClick(int pos) {
         selectCategtory = productTypeArrayList.get(pos).getType();
+        initailProductDetailCardViews();
+        System.out.println("ppppppppppppppppppppppppppppppp "+selectCategtory);
         productDetailCardViewGroups = new ArrayList<>();
         if (selectCategtory.equals("All")) {
             productDetailCardViewGroups.add(new ProductDetailCardViewGroup(getString(R.string.mobile_firebase), mobileProductDetailCardViews));
@@ -380,6 +311,10 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
     }
 
     private void initailProductDetailCardViews() {
+        mobileProductDetailCardViews.clear();
+        fashionProductDetailCardViews.clear();
+        labtopProductDetailCardViews.clear();
+        allProductDetailCardViews.clear();
         for (int i = 0; i < 10; i++) {
             MobileDetails mobileDetails = mobileDetailsArrayList.get(i);
             LabtopDetails labtopDetails = labtopDetailsArrayList.get(i);
@@ -438,10 +373,16 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.drawer_menu_home:
-                homeFragment.initailProductDetailCardViews(mobileDetailsArrayList,fashionDetailsArrayList,labtopDetailsArrayList);
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_activity3_fragment, homeFragment)
+                HomeFragment homeFragment1 = new HomeFragment(mobileDetailsArrayList, fashionDetailsArrayList, labtopDetailsArrayList);
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_activity3_fragment, homeFragment1)
                         .commit();
                 break;
+
+            case R.id.my_cart:
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_activity3_fragment, myCartFeagment)
+                        .commit();
+                break;
+
         }
         return true;
     }
