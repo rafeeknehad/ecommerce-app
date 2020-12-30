@@ -1,4 +1,4 @@
-package com.example.onlineshoppingisa;
+package com.example.onlineshoppingisa.activity2;
 
 import android.app.Application;
 
@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.onlineshoppingisa.activity2.MainActivity2Reposotory;
 import com.example.onlineshoppingisa.models.User;
 
 import java.util.List;

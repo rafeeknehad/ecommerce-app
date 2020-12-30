@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/modifiad_cart_view_image"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:scaleType="fitXY"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/modifiad_cart_view_product_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:background="@null"
+            android:text="Product Name"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/modifiad_cart_view_image" />
+
+
+        <TextView
+            android:id="@+id/modifiad_cart_view_product_quality_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:text="Quality:"
+            android:textSize="20sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/modifiad_cart_view_product_name" />
+
+        <TextView
+            android:id="@+id/modifiad_cart_view_product_quality_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20sp"
+            android:text="Product Quantity"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toRightOf="@id/modifiad_cart_view_product_quality_txt"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/modifiad_cart_view_product_name" />
+
+        <LinearLayout
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            android:id="@+id/modifiad_cart_view_linear_layout"
+            app:layout_constraintTop_toBottomOf="@id/modifiad_cart_view_product_quality_value"
+            android:layout_width="match_parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            >
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/modifiad_cart_view_increase_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_exposure_plus_1_24"
+                android:backgroundTint="@android:color/black"
+                />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/modifiad_cart_view_decrese_value"
+                android:layout_marginLeft="20dp"
+                android:layout_width="wrap_content"
+                android:src="@drawable/ic_baseline_exposure_neg_1_24"
+                android:backgroundTint="@android:color/black"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+        <TextView
+            android:id="@+id/modifiad_cart_view_product_price_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20sp"
+            android:text="Total Price:"
+            android:textSize="20sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/modifiad_cart_view_linear_layout" />
+
+        <TextView
+            android:id="@+id/modifiad_cart_view_product_price_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20sp"
+            android:text="Total Price"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toRightOf="@id/modifiad_cart_view_product_price_txt"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/modifiad_cart_view_linear_layout" />
+
+        <TextView
+            android:id="@+id/modifiad_cart_view_deliver_Date_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20sp"
+            android:text="Deliver Date:"
+            android:textSize="20sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/modifiad_cart_view_product_price_txt" />
+
+        <TextView
+            android:id="@+id/modifiad_cart_view_deliver_Date_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20sp"
+            android:text="Date Deliverd "
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toRightOf="@id/modifiad_cart_view_deliver_Date_txt"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/modifiad_cart_view_product_price_value" />
+
+        <TextView
+            android:id="@+id/modifiad_cart_view_loaction_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:text="Loaction:"
+            android:textSize="20sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/modifiad_cart_view_deliver_Date_txt" />
+
+        <ImageButton
+            android:id="@+id/modifiad_cart_view_location_btn"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/modifiad_cart_view_deliver_Date_txt"
+            android:backgroundTint="@android:color/black"
+            android:src="@drawable/ic_baseline_location_on_24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+        <TextView
+            android:id="@+id/modifiad_cart_view_loaction_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:text="Loaction"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/modifiad_cart_view_location_btn" />
+
+        <Button
+            android:layout_marginTop="20dp"
+            android:id="@+id/modifiad_cart_view_confitm_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/holo_blue_light"
+            android:text="Submit Orde"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/modifiad_cart_view_loaction_value" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

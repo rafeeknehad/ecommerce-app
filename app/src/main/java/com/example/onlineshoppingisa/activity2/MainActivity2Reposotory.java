@@ -1,4 +1,4 @@
-package com.example.onlineshoppingisa;
+package com.example.onlineshoppingisa.activity2;
 
 import android.util.Log;
 
@@ -57,7 +57,6 @@ public class MainActivity2Reposotory {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "onFailure: firestore " + e.getMessage());
                     }
                 });
         return usersLiveData;
@@ -70,11 +69,9 @@ public class MainActivity2Reposotory {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isComplete()) {
                             user.setUserAuthId(firebaseAuth.getUid());
-                            Log.d(TAG, "onComplete: 11123 "+firebaseAuth.getUid());
                             addUsers(user);
 
                         } else {
-                            Log.d(TAG, "onComplete: rafeek2 "+task.getException());
                         }
                     }
                 });
@@ -88,7 +85,6 @@ public class MainActivity2Reposotory {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful())
                         {
-                            Log.d(TAG, "onComplete: 1111 ");
                             loginLiveData.setValue(task.isComplete());
                         }
                     }

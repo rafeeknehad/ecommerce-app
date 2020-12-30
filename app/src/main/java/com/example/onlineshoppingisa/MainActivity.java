@@ -16,6 +16,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.example.onlineshoppingisa.activity2.MainActivity2;
+import com.example.onlineshoppingisa.activity2.MainActivity2Model;
+import com.example.onlineshoppingisa.activity3.MainActivity3;
+import com.example.onlineshoppingisa.fragment.HomeFragment;
 import com.example.onlineshoppingisa.models.User;
 import com.example.onlineshoppingisa.roomdatabase.ProductDataBase;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     //final
     private static final String TAG = "MainActivity";
     private static final int REQUEST_CODE = 1;
-    public static HomeFragment homeFragment;
     //ui
     private TextInputLayout emailTxt;
     private TextInputLayout passTxt;
@@ -47,14 +50,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d(TAG, "onCreate: aaaaa ");
         emailTxt = findViewById(R.id.input_email);
         passTxt = findViewById(R.id.input_password);
         loginBtn = findViewById(R.id.btn_login);
         signinBtn = findViewById(R.id.btn_create_account);
         forgetPass = findViewById(R.id.txt_forget_pass);
         rememberMe = findViewById(R.id.remember_me);
-        ProductDataBase productDataBase = ProductDataBase.grtInstance(MainActivity.this);
         mainActivity2Model = ViewModelProviders.of(this).get(MainActivity2Model.class);
         sharedPreferences = getSharedPreferences("rememberMe", MODE_PRIVATE);
 
@@ -97,8 +98,13 @@ public class MainActivity extends AppCompatActivity {
                 mainActivity2Model.loginUser(email, pass).observe(MainActivity.this, new Observer<Boolean>() {
                     @Override
                     public void onChanged(Boolean aBoolean) {
-                        Intent intent = new Intent(MainActivity.this, MainActivity3.class);
-                        startActivityForResult(intent, REQUEST_CODE);
+                        if(aBoolean) {
+                            Intent intent = new Intent(MainActivity.this, MainActivity3.class);
+                            startActivityForResult(intent, REQUEST_CODE);
+                        }
+                        else{
+                            Toast.makeText(MainActivity.this, "Please Sign Up", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
             }
@@ -129,14 +135,12 @@ public class MainActivity extends AppCompatActivity {
                     editor.putString("userName", emailTxt.getEditText().getText().toString().trim());
                     editor.putString("password", passTxt.getEditText().getText().toString().trim());
                     editor.apply();
-                    Toast.makeText(MainActivity.this, "Checked", Toast.LENGTH_SHORT).show();
                 } else if (!isChecked) {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putBoolean("checked", false);
                     editor.putString("userName", "");
                     editor.putString("password", "");
                     editor.apply();
-                    Toast.makeText(MainActivity.this, "Unchecked", Toast.LENGTH_SHORT).show();
                 }
             }
         });

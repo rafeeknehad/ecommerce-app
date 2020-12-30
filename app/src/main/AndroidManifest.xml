@@ -26,13 +26,13 @@
 
         <activity
             android:name=".MainActivity5"
-            android:parentActivityName=".MainActivity3"
+            android:parentActivityName=".activity3.MainActivity3"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.Home" />
         <activity
-            android:name=".MainActivity3"
+            android:name=".activity3.MainActivity3"
             android:theme="@style/Theme.Design.Light.NoActionBar" />
         <activity
-            android:name=".MainActivity2"
+            android:name=".activity2.MainActivity2"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".MainActivity"

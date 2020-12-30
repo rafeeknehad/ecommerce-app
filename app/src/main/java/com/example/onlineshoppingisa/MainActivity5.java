@@ -19,6 +19,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.borjabravo.readmoretextview.ReadMoreTextView;
+import com.example.onlineshoppingisa.activity3.MainActivity3;
+import com.example.onlineshoppingisa.dialog.ProductDialog;
 import com.example.onlineshoppingisa.models.ConfirmOrder;
 import com.example.onlineshoppingisa.models.FashionDetails;
 import com.example.onlineshoppingisa.models.LabtopDetails;

@@ -12,4 +12,5 @@
     <string name="product_type_firebase">ProductType</string>
     <string name="labtop_firebase">Labtop</string>
     <string name="memory_of_ram">Memory Of Ram:</string>
+    <string name="home_page">home_page</string>
 </resources>

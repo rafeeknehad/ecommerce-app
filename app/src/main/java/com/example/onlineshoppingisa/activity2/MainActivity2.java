@@ -1,4 +1,4 @@
-package com.example.onlineshoppingisa;
+package com.example.onlineshoppingisa.activity2;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -14,6 +14,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.example.onlineshoppingisa.dialog.DataPickerFragment;
+import com.example.onlineshoppingisa.MainActivity;
+import com.example.onlineshoppingisa.R;
 import com.example.onlineshoppingisa.models.User;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -60,9 +63,12 @@ public class MainActivity2 extends AppCompatActivity implements DatePickerDialog
                     return;
                 }
                 RadioButton selectedGender = findViewById(radioGroup.getCheckedRadioButtonId());
-                User user = new User(emailText.getEditText().getText().toString().trim(), userNameText.getEditText().getText().toString().trim(),
-                        passText.getEditText().getText().toString().trim(), jobText.getEditText().getText().toString().trim(),
-                        selectedGender.getText().toString(), dataOfBirth.getText().toString());
+                User user = new User(emailText.getEditText().getText().toString().trim(),
+                        userNameText.getEditText().getText().toString().trim(),
+                        passText.getEditText().getText().toString().trim(),
+                        jobText.getEditText().getText().toString().trim(),
+                        selectedGender.getText().toString(),
+                        dataOfBirth.getText().toString());
                 mainActivity2Model.addUserAuth(user);
                 initialField();
 

@@ -1,4 +1,4 @@
-package com.example.onlineshoppingisa;
+package com.example.onlineshoppingisa.activity3;
 
 import android.app.Application;
 import android.util.Log;
@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.onlineshoppingisa.R;
 import com.example.onlineshoppingisa.models.AllCategory;
 import com.example.onlineshoppingisa.models.FashionDetails;
 import com.example.onlineshoppingisa.models.LabtopDetails;

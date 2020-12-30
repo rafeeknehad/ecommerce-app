@@ -1,4 +1,4 @@
-package com.example.onlineshoppingisa;
+package com.example.onlineshoppingisa.dialog;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;

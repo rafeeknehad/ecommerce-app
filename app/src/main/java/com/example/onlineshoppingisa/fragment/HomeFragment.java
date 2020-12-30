@@ -1,26 +1,21 @@
-package com.example.onlineshoppingisa;
+package com.example.onlineshoppingisa.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.onlineshoppingisa.models.AllCategory;
+import com.example.onlineshoppingisa.adapter.ProductAdapterGroup;
+import com.example.onlineshoppingisa.R;
+import com.example.onlineshoppingisa.activity3.MainActivity3Model;
 import com.example.onlineshoppingisa.models.FashionDetails;
 import com.example.onlineshoppingisa.models.LabtopDetails;
 import com.example.onlineshoppingisa.models.MobileDetails;
@@ -80,7 +75,6 @@ public class HomeFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
         initailProductDetailCardViews(getActivity(),mobileDetailsArrayList,fashionDetailsArrayList,labtopDetailsArrayList);
-
         return view;
     }
 
@@ -90,13 +84,13 @@ public class HomeFragment extends Fragment {
             LabtopDetails labtopDetails = labtopDetailsArrayList.get(i);
             FashionDetails fashionDetails = fashionDetailsArrayList.get(i);
 
-            ProductDetailCardView mobileItem = new ProductDetailCardView(context.getString(R.string.mobile_firebase), mobileDetails.getName(), mobileDetails.getPrice(), mobileDetails.getRating(),
+            ProductDetailCardView mobileItem = new ProductDetailCardView(mobileDetails.getKey(),context.getString(R.string.mobile_firebase), mobileDetails.getName(), mobileDetails.getPrice(), mobileDetails.getRating(),
                     mobileDetails.getImage());
 
-            ProductDetailCardView fashionItem = new ProductDetailCardView(context.getString(R.string.fashion_firebase), fashionDetails.getName(), fashionDetails.getPrice(), fashionDetails.getRating(),
+            ProductDetailCardView fashionItem = new ProductDetailCardView(fashionDetails.getKey(),context.getString(R.string.fashion_firebase), fashionDetails.getName(), fashionDetails.getPrice(), fashionDetails.getRating(),
                     fashionDetails.getImage());
 
-            ProductDetailCardView labtopItem = new ProductDetailCardView(context.getString(R.string.labtop_firebase), labtopDetails.getName(), labtopDetails.getPrice(), labtopDetails.getRating(),
+            ProductDetailCardView labtopItem = new ProductDetailCardView(labtopDetails.getKey(),context.getString(R.string.labtop_firebase), labtopDetails.getName(), labtopDetails.getPrice(), labtopDetails.getRating(),
                     labtopDetails.getImage());
 
             allProductDetailCardViews.add(mobileItem);
@@ -118,7 +112,6 @@ public class HomeFragment extends Fragment {
     }
 
     public void setDataForProdructAdapter(List<ProductDetailCardViewGroup> productDetailCardViewGroups) {
-        System.out.println("kkkkkkkkkkkkkkkkkkkkkkkkkk "+productDetailCardViewGroups.size()+" "+productDetailCardViewGroups.get(0).getProductTypeList().size());
         productAdapterGroup.setList(productDetailCardViewGroups);
     }
 }

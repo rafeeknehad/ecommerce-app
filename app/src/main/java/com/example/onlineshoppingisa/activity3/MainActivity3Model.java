@@ -1,4 +1,4 @@
-package com.example.onlineshoppingisa;
+package com.example.onlineshoppingisa.activity3;
 
 import android.app.Application;
 
@@ -9,9 +9,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.onlineshoppingisa.models.AllCategory;
 import com.example.onlineshoppingisa.models.FashionDetails;
-
-import java.util.HashMap;
-import java.util.List;
 
 public class MainActivity3Model extends AndroidViewModel {
 

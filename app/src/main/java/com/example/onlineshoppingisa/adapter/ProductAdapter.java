@@ -1,4 +1,4 @@
-package com.example.onlineshoppingisa;
+package com.example.onlineshoppingisa.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.onlineshoppingisa.R;
 import com.example.onlineshoppingisa.models.ProductDetailCardView;
 import com.squareup.picasso.Picasso;
 
@@ -62,6 +63,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     public interface ProductAdapterInterface {
         public void productAdapterSetOnItemClickListener(ProductDetailCardView productDetailCardView, int pos);
+        public void productAdapterSetOnItemClickListenerCartFragment(ProductDetailCardView productDetailCardView,int pos);
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
@@ -88,6 +90,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                     int pos = getAdapterPosition();
                     if (pos != RecyclerView.NO_POSITION) {
                         productAdapterInterface.productAdapterSetOnItemClickListener(productDetailCardViews.get(pos), pos);
+                        productAdapterInterface.productAdapterSetOnItemClickListenerCartFragment(productDetailCardViews.get(pos),pos);
                     }
                 }
             });

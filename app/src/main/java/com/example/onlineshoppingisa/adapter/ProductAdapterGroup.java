@@ -1,7 +1,6 @@
-package com.example.onlineshoppingisa;
+package com.example.onlineshoppingisa.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.onlineshoppingisa.R;
 import com.example.onlineshoppingisa.models.ProductDetailCardView;
 import com.example.onlineshoppingisa.models.ProductDetailCardViewGroup;
 
@@ -117,6 +117,7 @@ public class ProductAdapterGroup extends RecyclerView.Adapter<ProductAdapterGrou
     public void setList(List<ProductDetailCardViewGroup> list)
     {
         this.productDetailCardViewGroups = list;
+        this.productDetailCardViewGroupsFull = list;
         notifyDataSetChanged();;
     }
 }
