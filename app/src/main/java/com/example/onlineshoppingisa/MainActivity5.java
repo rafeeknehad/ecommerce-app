@@ -57,6 +57,7 @@ public class MainActivity5 extends AppCompatActivity implements ProductDialog.ge
     private String longitude;
     private int quantity;
     private String orderId;
+
     //xml
     private ImageView productImageView;
     private TextView productName;
@@ -72,7 +73,7 @@ public class MainActivity5 extends AppCompatActivity implements ProductDialog.ge
     private Button setLocation;
     private TextView textViewStorageTxt;
     private TextView textViewMemoryTxt;
-
+    private Button confirmOrder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +95,7 @@ public class MainActivity5 extends AppCompatActivity implements ProductDialog.ge
         setLocation = findViewById(R.id.main_activit5_select_location);
         textViewStorageTxt = findViewById(R.id.main_activit5_storage_capasity_txt);
         textViewMemoryTxt = findViewById(R.id.main_activit5_memory_ram_txt);
+        confirmOrder = findViewById(R.id.main_activit5_confirm_orde);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -117,6 +119,13 @@ public class MainActivity5 extends AppCompatActivity implements ProductDialog.ge
                 } catch (GooglePlayServicesNotAvailableException e) {
                     e.printStackTrace();
                 }
+            }
+        });
+
+        confirmOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addProduct();
             }
         });
 
@@ -239,36 +248,8 @@ public class MainActivity5 extends AppCompatActivity implements ProductDialog.ge
         Intent intent = new Intent(MainActivity5.this, MainActivity4.class);
         intent.putExtra(PARAMTER1, confirmOrder);
         startActivityForResult(intent, OPEN_ACTIVITY);
-        /*
-        Orders orders = new Orders("123", firebaseAuth.getCurrentUser().getUid(),
-                (latitude + "&" + longitude));
-        orderCollection.add(orders)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        orderId = documentReference.getId();
-                        Log.d(TAG, "onSuccess: ");
-                        Log.d(TAG, "onSuccess: 111122 " + orderId);
-                    }
-                });
 
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                OrderDetails orderDetails = new OrderDetails(productId, orderId,
-                        String.valueOf(quantity));
-                orderDetailsCollection.add(orderDetails)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                Log.d(TAG, "onSuccess: 1111 " + documentReference.getId());
-                            }
-                        });
-            }
-        }, 2000);
-        */
-        productDataBase.productDao().insert(new ProductRoom(firebaseAuth.getCurrentUser().getUid(), productId))
+        productDataBase.productDao().insert(new ProductRoom(confirmOrder,firebaseAuth.getCurrentUser().getUid(), productId))
                 .subscribeOn(Schedulers.computation())
                 .subscribe(new CompletableObserver() {
                     @Override

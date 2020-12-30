@@ -155,7 +155,6 @@ public class MyCartFeagment extends Fragment {
         productDataBaseModel.getLiveDataOfUser(uid).observe((LifecycleOwner) context, new Observer<List<ProductRoom>>() {
             @Override
             public void onChanged(List<ProductRoom> productRooms) {
-                System.out.println("kkkkkkkkkkkkkkkkkkkkkkkkkkggg " + productRooms.size());
                 for (ProductRoom productRoom : productRooms) {
                     if (productRoom.getProductId().contains("labtop")) {
                         for (LabtopDetails labtopDetails : labtopDetailsArrayList) {

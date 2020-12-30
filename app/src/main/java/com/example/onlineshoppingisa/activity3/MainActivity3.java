@@ -33,13 +33,16 @@ import com.example.onlineshoppingisa.fragment.HomeFragment;
 import com.example.onlineshoppingisa.fragment.ModifiadCartViewFragment;
 import com.example.onlineshoppingisa.fragment.MyCartFeagment;
 import com.example.onlineshoppingisa.models.AllCategory;
+import com.example.onlineshoppingisa.models.ConfirmOrder;
 import com.example.onlineshoppingisa.models.FashionDetails;
 import com.example.onlineshoppingisa.models.LabtopDetails;
 import com.example.onlineshoppingisa.models.MobileDetails;
 import com.example.onlineshoppingisa.models.ProductDetailCardView;
 import com.example.onlineshoppingisa.models.ProductDetailCardViewGroup;
 import com.example.onlineshoppingisa.models.ProductType;
+import com.example.onlineshoppingisa.roomdatabase.ProductDataBase;
 import com.example.onlineshoppingisa.roomdatabase.ProductDataBaseModel;
+import com.example.onlineshoppingisa.roomdatabase.ProductRoom;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -99,6 +102,9 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
     private HomeFragment homeFragment;
     private MyCartFeagment myCartFeagment;
 
+    private List<ProductRoom> userProduct;
+
+    ProductDataBase productDataBase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,7 +116,9 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
         productTypeArrayList = new ArrayList<>();
         labtopDetailsArrayList = new ArrayList<>();
         mainActivity3Model = ViewModelProviders.of(this).get(MainActivity3Model.class);
+        productDataBase = ProductDataBase.grtInstance(MainActivity3.this);
 
+        productDataBaseModel = ViewModelProviders.of(MainActivity3.this).get(ProductDataBaseModel.class);
         selectCategtory = "All";
 
         allProductDetailCardViews = new ArrayList<>();
@@ -119,6 +127,7 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
         fashionProductDetailCardViews = new ArrayList<>();
         productDetailCardViewGroups = new ArrayList<>();
 
+        userProduct = new ArrayList<>();
 
         productUserDetailCardViewGroups = new ArrayList<>();
 
@@ -138,6 +147,12 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
+        productDataBaseModel.getLiveDataOfUser(firebaseAuth.getCurrentUser().getUid()).observe(this, new Observer<List<ProductRoom>>() {
+            @Override
+            public void onChanged(List<ProductRoom> productRooms) {
+                userProduct = productRooms;
+            }
+        });
         mainActivity3Model.getLiveData().observe(this, new Observer<AllCategory>() {
             @Override
             public void onChanged(AllCategory allCategory) {
@@ -198,7 +213,6 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
                     @Override
                     public boolean onQueryTextChange(String newText) {
                         HomeFragment.productAdapterGroup.getFilter().filter(newText);
-                        //HomeFragment.productAdapterGroup.notifyDataSetChanged();
                         return true;
                     }
                 });
@@ -396,7 +410,15 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
     public void productAdapterSetOnItemClickListenerCartFragment(ProductDetailCardView productDetailCardView, int pos) {
         System.out.println("eeeeeeeeeeeeeeeeeeeeeeeeeeeeewww " + getSupportFragmentManager().findFragmentById(R.id.main_activity3_fragment).toString());
         if (getSupportFragmentManager().findFragmentById(R.id.main_activity3_fragment) instanceof MyCartFeagment) {
-            ModifiadCartViewFragment modifiadCartViewFragment = new ModifiadCartViewFragment(productDetailCardView);
+            ConfirmOrder confirmOrder = null;
+            for (ProductRoom productRoom : userProduct)
+            {
+                if(productRoom.getProductId().equals(productDetailCardView.getProductId()))
+                {
+                    confirmOrder = productRoom.getConfirmOrder();
+                }
+            }
+            ModifiadCartViewFragment modifiadCartViewFragment = new ModifiadCartViewFragment(confirmOrder);
             getSupportFragmentManager().beginTransaction().replace(R.id.main_activity3_fragment, modifiadCartViewFragment)
                     .addToBackStack(null)
                     .commit();
