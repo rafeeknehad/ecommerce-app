@@ -30,6 +30,8 @@ import com.example.onlineshoppingisa.models.ProductDetailCardViewGroup;
 import com.example.onlineshoppingisa.roomdatabase.ProductDataBaseModel;
 import com.example.onlineshoppingisa.roomdatabase.ProductRoom;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +70,14 @@ public class MyCartFeagment extends Fragment {
 
     private Button buttonConfirm;
 
+    private ProductRoom productRoom;
+
+    private String userProduct = "";
+
+    private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+    private CollectionReference collectionReference;
+
+    private String deliverdDate;
     public MyCartFeagment(ArrayList<MobileDetails> mobileDetailsArrayList, ArrayList<FashionDetails> fashionDetailsArrayList,
                           ArrayList<LabtopDetails> labtopDetailsArrayList) {
         this.mobileDetailsArrayList = mobileDetailsArrayList;
@@ -79,6 +89,8 @@ public class MyCartFeagment extends Fragment {
         labtopUserProductDetailCardViews = new ArrayList<>();
         fashionUserProductDetailCardViews = new ArrayList<>();
         productUserDetailCardViewGroups = new ArrayList<>();
+
+        collectionReference = firebaseFirestore.collection(firebaseAuth.getCurrentUser().getUid());
     }
 
     @Nullable
@@ -87,11 +99,12 @@ public class MyCartFeagment extends Fragment {
         View view = inflater.inflate(R.layout.my_cart_fragment, container, false);
         buttonConfirm = view.findViewById(R.id.my_cart_fragment_btn);
         recyclerView = view.findViewById(R.id.my_cart_fragment_recyclerview);
+        productUserDetailCardViewGroups = new ArrayList<>();
+        Log.d(TAG, "onCreateView: **** " + productUserDetailCardViewGroups.size());
         showUserProduct(firebaseAuth.getCurrentUser().getUid(), getActivity());
         productAdapterGroup = new ProductAdapterGroup(getActivity(), productUserDetailCardViewGroups);
         recyclerView.setAdapter(productAdapterGroup);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
-
 
         buttonConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,15 +124,6 @@ public class MyCartFeagment extends Fragment {
         properties.put("mail.smtp.port", "465");
 
 
-        /*properties.put("mail.smtp.auth", "true");
-        properties.setProperty("mail.transport.protocol", "smtp");
-        properties.setProperty("mail.host", "smtp.gmail.com");
-        properties.put("mail.smtp.socketFactory.port", "465");
-        properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        properties.put("mail.smtp.socketFactory.fallback", "false");
-        properties.setProperty("mail.smtp.quitwait", "false");*/
-
-
         Session session = Session.getInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -136,8 +140,8 @@ public class MyCartFeagment extends Fragment {
                 Message message = new MimeMessage(session);
                 message.setFrom(new InternetAddress("rafeek.nehad9823@gmail.com"));
                 message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("rafeeknehad333@gmail.com"));
-                message.setSubject("sending email");
-                message.setText("hello");
+                message.setSubject("Confirm Order");
+                message.setText(userProduct);
                 Transport.send(message);
                 Toast.makeText(getActivity(), "Succsess", Toast.LENGTH_SHORT).show();
 
@@ -149,17 +153,20 @@ public class MyCartFeagment extends Fragment {
 
         }
     }
-
     private void showUserProduct(String uid, Context context) {
-        allUserProductDetailCardViews = new ArrayList<>();
-        mobileUserProductDetailCardViews = new ArrayList<>();
-        labtopUserProductDetailCardViews = new ArrayList<>();
-        fashionUserProductDetailCardViews = new ArrayList<>();
-        productUserDetailCardViewGroups = new ArrayList<>();
+        Log.d(TAG, "showUserProduct: **** " + productUserDetailCardViewGroups.size());
         productDataBaseModel = ViewModelProviders.of((FragmentActivity) context).get(ProductDataBaseModel.class);
         productDataBaseModel.getLiveDataOfUser(uid).observe((LifecycleOwner) context, new Observer<List<ProductRoom>>() {
             @Override
             public void onChanged(List<ProductRoom> productRooms) {
+                allUserProductDetailCardViews.clear();
+                mobileUserProductDetailCardViews = new ArrayList<>();
+                labtopUserProductDetailCardViews = new ArrayList<>();
+                fashionUserProductDetailCardViews = new ArrayList<>();
+                productUserDetailCardViewGroups = new ArrayList<>();
+                productUserDetailCardViewGroups.clear();
+                userProduct = "";
+                Log.d(TAG, "onChanged: **** " + productRooms.size());
                 for (ProductRoom productRoom : productRooms) {
                     if (productRoom.getProductId().contains("labtop")) {
                         for (LabtopDetails labtopDetails : labtopDetailsArrayList) {
@@ -186,6 +193,11 @@ public class MyCartFeagment extends Fragment {
                             }
                         }
                     }
+                    userProduct += "Order ID: " + productRoom.getConfirmOrder().getOrderId() + "\n";
+                    userProduct += "Name: " + productRoom.getConfirmOrder().getProductName() + "\n";
+                    userProduct += "Quality: " + productRoom.getConfirmOrder().getGetProductQuantity() + "\n";
+                    userProduct += "Total Price: " + productRoom.getConfirmOrder().getProductPrice() + "\n";
+                    userProduct += "----------------------------------------------------------------------\n";
                 }
                 allUserProductDetailCardViews.addAll(mobileUserProductDetailCardViews);
                 allUserProductDetailCardViews.addAll(labtopUserProductDetailCardViews);
@@ -199,7 +211,7 @@ public class MyCartFeagment extends Fragment {
                 if (labtopUserProductDetailCardViews.size() != 0) {
                     productUserDetailCardViewGroups.add(new ProductDetailCardViewGroup(getString(R.string.labtop_firebase), labtopUserProductDetailCardViews));
                 }
-                productAdapterGroup.notifyDataSetChanged();
+                productAdapterGroup.setList(productUserDetailCardViewGroups);
             }
         });
 

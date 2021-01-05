@@ -29,15 +29,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <!--<androidx.recyclerview.widget.RecyclerView
-            android:overScrollMode="never"
-            android:nestedScrollingEnabled="false"
-            android:scrollbars="vertical"
-            tools:listitem="@layout/product_detail_cardview_group"
-            android:id="@+id/main_activity3_recycler_view_product_detail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />-->
-
         <FrameLayout
             android:tag="@string/home_page"
             android:id="@+id/main_activity3_fragment"

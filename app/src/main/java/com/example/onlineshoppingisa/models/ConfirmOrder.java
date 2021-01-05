@@ -14,9 +14,26 @@ public class ConfirmOrder implements Parcelable {
     private String productName;
     private String productDeliverDate;
     private String orderDetailId;
+    private String orderId;
 
     public String getProductDeliverDate() {
         return productDeliverDate;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public void setOrderDetailId(String orderDetailId) {
+        this.orderDetailId = orderDetailId;
+    }
+
+    public String getOrderDetailId() {
+        return orderDetailId;
     }
 
     public ConfirmOrder(String productId, String productImage, String getProductQuantity, String productPrice, String latitude, String longitude, String productName, String productDeliverDate) {
@@ -40,13 +57,7 @@ public class ConfirmOrder implements Parcelable {
         productName = in.readString();
     }
 
-    public void setOrderDetailId(String orderDetailId) {
-        this.orderDetailId = orderDetailId;
-    }
 
-    public String getOrderDetailId() {
-        return orderDetailId;
-    }
 
     public static final Creator<ConfirmOrder> CREATOR = new Creator<ConfirmOrder>() {
         @Override

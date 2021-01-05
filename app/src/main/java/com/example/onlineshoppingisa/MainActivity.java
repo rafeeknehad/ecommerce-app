@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         mainActivity2Model.getAllUser().observe(this, new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
+                Log.d(TAG, "onChanged: **** "+users.size());
                 allDataOfUsers = users;
             }
         });

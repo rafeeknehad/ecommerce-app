@@ -1,5 +1,6 @@
 package com.example.onlineshoppingisa.activity2;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -20,7 +21,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Handler;
 
 public class MainActivity2Reposotory {
 
@@ -42,56 +42,78 @@ public class MainActivity2Reposotory {
     }
 
     public void addUserAuth(User user) {
-        firebaseAuth.createUserWithEmailAndPassword(user.getEmail(), user.getPass())
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isComplete()) {
-                            user.setUserAuthId(firebaseAuth.getUid());
-                            addUsers(user);
-
-                        } else {
-                            Log.d(TAG, "onComplete: addUserAuth Error");
-                        }
-                    }
-                });
+        new AddUserAuthAsync(user).execute();
     }
 
-
     public LiveData<List<User>> getAllUsers() {
-        users.get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        List<User> data = new ArrayList<>();
-                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                            User user = documentSnapshot.toObject(User.class);
-                            user.setIdKey(documentSnapshot.getId());
-                            data.add(user);
-                        }
-                        usersLiveData.setValue(data);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                    }
-                });
+        new GetAllUsersAsync().execute();
         return usersLiveData;
     }
 
-    public LiveData<Boolean> loginUser(String email,String pass)
-    {
-        firebaseAuth.signInWithEmailAndPassword(email,pass)
+    public LiveData<Boolean> loginUser(String email, String pass) {
+        firebaseAuth.signInWithEmailAndPassword(email, pass)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful())
-                        {
+                        if (task.isSuccessful()) {
                             loginLiveData.setValue(task.isComplete());
                         }
                     }
                 });
         return loginLiveData;
+    }
+
+    public class AddUserAuthAsync extends AsyncTask<Void, Void, Void> {
+
+        private User user;
+
+        public AddUserAuthAsync(User user) {
+            this.user = user;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            Log.d(TAG, "onComplete: ****" + Thread.currentThread().getName());
+            firebaseAuth.createUserWithEmailAndPassword(user.getEmail(), user.getPass())
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                user.setUserAuthId(firebaseAuth.getUid());
+                                addUsers(user);
+
+                            } else {
+                                Log.d(TAG, "onComplete: addUserAuth Error");
+                            }
+                        }
+                    });
+            return null;
+        }
+    }
+
+    public class GetAllUsersAsync extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            users.get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            List<User> data = new ArrayList<>();
+                            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                User user = documentSnapshot.toObject(User.class);
+                                user.setIdKey(documentSnapshot.getId());
+                                data.add(user);
+                            }
+                            Log.d(TAG, "onSuccess: **** "+Thread.currentThread().getName().toString());
+                            usersLiveData.setValue(data);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                        }
+                    });
+            return null;
+        }
     }
 }

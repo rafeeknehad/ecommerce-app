@@ -5,6 +5,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,7 +38,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -47,7 +51,7 @@ import io.reactivex.schedulers.Schedulers;
 public class ModifiadCartViewFragment extends Fragment {
 
     private static final int PLACE_PICKER_REQUEST = 1;
-
+    private static final String TAG = "ModifiadCartViewFragmen";
 
     private ConfirmOrder confirmOrder;
     private FirebaseFirestore firestore = FirebaseFirestore.getInstance();
@@ -143,11 +147,15 @@ public class ModifiadCartViewFragment extends Fragment {
     }
 
     private void initialData() {
+
+        Log.d(TAG, "initialData: **** "+confirmOrder.getProductDeliverDate());
         Picasso.with(getActivity())
                 .load(confirmOrder.getProductImage())
                 .into(productimageView);
 
         productName.setText(confirmOrder.getProductName());
+
+        productDataDelivery.setText(confirmOrder.getProductDeliverDate());
 
         productQuantity.setText(confirmOrder.getGetProductQuantity());
         String priceStr = new String();
@@ -184,6 +192,8 @@ public class ModifiadCartViewFragment extends Fragment {
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
+                                Log.d(TAG, "onSuccess: **** "+orderId);
+                                confirmOrder.setOrderId(orderId);
                                 orderDetailsId = documentReference.getId();
                             }
                         });
@@ -193,6 +203,7 @@ public class ModifiadCartViewFragment extends Fragment {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                confirmOrder.setOrderId(orderId);
                 confirmOrder.setOrderDetailId(orderDetailsId);
                 productDataBase.productDao().insert(new ProductRoom(confirmOrder, firebaseAuth.getCurrentUser().getUid(), confirmOrder.getProductId()))
                         .subscribeOn(Schedulers.computation())

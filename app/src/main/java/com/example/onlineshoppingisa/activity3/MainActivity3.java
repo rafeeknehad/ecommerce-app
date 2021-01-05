@@ -153,6 +153,7 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
                 userProduct = productRooms;
             }
         });
+
         mainActivity3Model.getLiveData().observe(this, new Observer<AllCategory>() {
             @Override
             public void onChanged(AllCategory allCategory) {
@@ -408,9 +409,7 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
 
     @Override
     public void productAdapterSetOnItemClickListenerCartFragment(ProductDetailCardView productDetailCardView, int pos) {
-        System.out.println("eeeeeeeeeeeeeeeeeeeeeeeeeeeeewww " + getSupportFragmentManager().findFragmentById(R.id.main_activity3_fragment).toString());
         if (getSupportFragmentManager().findFragmentById(R.id.main_activity3_fragment) instanceof MyCartFeagment) {
-            Log.d(TAG, "productAdapterSetOnItemClickListenerCartFragment: 66666 ");
             ConfirmOrder confirmOrder = null;
             for (ProductRoom productRoom : userProduct)
             {

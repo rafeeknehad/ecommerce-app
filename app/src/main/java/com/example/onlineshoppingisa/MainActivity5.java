@@ -34,6 +34,9 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import io.reactivex.CompletableObserver;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -241,9 +244,17 @@ public class MainActivity5 extends AppCompatActivity implements ProductDialog.ge
     private void addProduct() {
 
         if(quantity>0) {
-            ConfirmOrder confirmOrder = new ConfirmOrder(productId, productImage, String.valueOf(quantity),
-                    productPriceTxt, latitude, longitude, productNameTxt, "123");
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");// HH:mm:ss");
+            String reg_date = df.format(c.getTime());
+            c.add(Calendar.DATE, 3);  // number of days to add
+            String deliverdData = df.format(c.getTime());
 
+            //Log.d(TAG, "addProduct: **** "+deliverdData);
+            ConfirmOrder confirmOrder = new ConfirmOrder(productId, productImage, String.valueOf(quantity),
+                    productPriceTxt, latitude, longitude, productNameTxt, deliverdData);
+
+            Log.d(TAG, "addProduct: **** "+confirmOrder.getProductDeliverDate());
             Intent intent = new Intent(MainActivity5.this, MainActivity4.class);
             intent.putExtra(PARAMTER1, confirmOrder);
             startActivityForResult(intent, OPEN_ACTIVITY);
