@@ -36,9 +36,27 @@ public class MainActivity2Reposotory {
         loginLiveData = new MutableLiveData<>();
     }
 
+    //MainActivity2
     public void addUsers(User user) {
         users.add(user);
     }
+
+    public void addUserAuth(User user) {
+        firebaseAuth.createUserWithEmailAndPassword(user.getEmail(), user.getPass())
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isComplete()) {
+                            user.setUserAuthId(firebaseAuth.getUid());
+                            addUsers(user);
+
+                        } else {
+                            Log.d(TAG, "onComplete: addUserAuth Error");
+                        }
+                    }
+                });
+    }
+
 
     public LiveData<List<User>> getAllUsers() {
         users.get()
@@ -60,21 +78,6 @@ public class MainActivity2Reposotory {
                     }
                 });
         return usersLiveData;
-    }
-
-    public void addUserAuth(User user) {
-        firebaseAuth.createUserWithEmailAndPassword(user.getEmail(), user.getPass())
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isComplete()) {
-                            user.setUserAuthId(firebaseAuth.getUid());
-                            addUsers(user);
-
-                        } else {
-                        }
-                    }
-                });
     }
 
     public LiveData<Boolean> loginUser(String email,String pass)

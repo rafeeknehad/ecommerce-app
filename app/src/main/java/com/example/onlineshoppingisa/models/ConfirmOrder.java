@@ -13,6 +13,7 @@ public class ConfirmOrder implements Parcelable {
     private String longitude;
     private String productName;
     private String productDeliverDate;
+    private String orderDetailId;
 
     public String getProductDeliverDate() {
         return productDeliverDate;
@@ -37,6 +38,14 @@ public class ConfirmOrder implements Parcelable {
         latitude = in.readString();
         longitude = in.readString();
         productName = in.readString();
+    }
+
+    public void setOrderDetailId(String orderDetailId) {
+        this.orderDetailId = orderDetailId;
+    }
+
+    public String getOrderDetailId() {
+        return orderDetailId;
     }
 
     public static final Creator<ConfirmOrder> CREATOR = new Creator<ConfirmOrder>() {

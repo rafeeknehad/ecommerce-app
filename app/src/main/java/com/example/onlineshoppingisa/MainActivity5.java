@@ -46,7 +46,6 @@ public class MainActivity5 extends AppCompatActivity implements ProductDialog.ge
     private static final int OPEN_ACTIVITY = 2;
 
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    private ProductDataBase productDataBase;
 
 
     private String productId;
@@ -99,7 +98,6 @@ public class MainActivity5 extends AppCompatActivity implements ProductDialog.ge
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        productDataBase = ProductDataBase.grtInstance(MainActivity5.this);
 
         addCart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -242,31 +240,17 @@ public class MainActivity5 extends AppCompatActivity implements ProductDialog.ge
 
     private void addProduct() {
 
-        ConfirmOrder confirmOrder = new ConfirmOrder(productId, productImage, String.valueOf(quantity),
-                productPriceTxt, latitude, longitude, productNameTxt, "123");
+        if(quantity>0) {
+            ConfirmOrder confirmOrder = new ConfirmOrder(productId, productImage, String.valueOf(quantity),
+                    productPriceTxt, latitude, longitude, productNameTxt, "123");
 
-        Intent intent = new Intent(MainActivity5.this, MainActivity4.class);
-        intent.putExtra(PARAMTER1, confirmOrder);
-        startActivityForResult(intent, OPEN_ACTIVITY);
+            Intent intent = new Intent(MainActivity5.this, MainActivity4.class);
+            intent.putExtra(PARAMTER1, confirmOrder);
+            startActivityForResult(intent, OPEN_ACTIVITY);
+        }
+        else {
+            Toast.makeText(this, "Please Determine the number of product", Toast.LENGTH_SHORT).show();
+        }
 
-        productDataBase.productDao().insert(new ProductRoom(confirmOrder,firebaseAuth.getCurrentUser().getUid(), productId))
-                .subscribeOn(Schedulers.computation())
-                .subscribe(new CompletableObserver() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d(TAG, "onComplete: 1111 " + "complete");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-                });
-        Toast.makeText(this, "Add", Toast.LENGTH_SHORT).show();
     }
 }

@@ -23,11 +23,6 @@ public class MainActivity2Model extends AndroidViewModel {
         listLiveData = reposotory.getAllUsers();
     }
 
-    public void addUser(User user)
-    {
-        reposotory.addUsers(user);
-    }
-
     public void addUserAuth(User user)
     {
         reposotory.addUserAuth(user);

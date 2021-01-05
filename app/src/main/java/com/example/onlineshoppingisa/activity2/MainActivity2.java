@@ -3,7 +3,6 @@ package com.example.onlineshoppingisa.activity2;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -14,9 +13,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.example.onlineshoppingisa.dialog.DataPickerFragment;
 import com.example.onlineshoppingisa.MainActivity;
 import com.example.onlineshoppingisa.R;
+import com.example.onlineshoppingisa.dialog.DataPickerFragment;
 import com.example.onlineshoppingisa.models.User;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -72,12 +71,12 @@ public class MainActivity2 extends AppCompatActivity implements DatePickerDialog
                 mainActivity2Model.addUserAuth(user);
                 initialField();
 
-                Log.d(TAG, "onClick: aaaa ");
                 Intent intent = new Intent(MainActivity2.this, MainActivity.class);
                 setResult(RESULT_OK, intent);
                 finish();
             }
         });
+
         dataOfBirth.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {

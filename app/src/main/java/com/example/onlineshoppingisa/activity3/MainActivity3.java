@@ -410,6 +410,7 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
     public void productAdapterSetOnItemClickListenerCartFragment(ProductDetailCardView productDetailCardView, int pos) {
         System.out.println("eeeeeeeeeeeeeeeeeeeeeeeeeeeeewww " + getSupportFragmentManager().findFragmentById(R.id.main_activity3_fragment).toString());
         if (getSupportFragmentManager().findFragmentById(R.id.main_activity3_fragment) instanceof MyCartFeagment) {
+            Log.d(TAG, "productAdapterSetOnItemClickListenerCartFragment: 66666 ");
             ConfirmOrder confirmOrder = null;
             for (ProductRoom productRoom : userProduct)
             {
@@ -429,6 +430,7 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.drawer_menu_home:
+                navigationView.setCheckedItem(R.id.drawer_menu_home);
                 HomeFragment homeFragment1 = new HomeFragment(mobileDetailsArrayList, fashionDetailsArrayList, labtopDetailsArrayList);
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_activity3_fragment, homeFragment1)
                         .addToBackStack(null)
@@ -436,6 +438,7 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
                 break;
 
             case R.id.my_cart:
+                navigationView.setCheckedItem(R.id.my_cart);
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_activity3_fragment, myCartFeagment)
                         .addToBackStack(null)
                         .commit();
