@@ -30,8 +30,11 @@ import com.example.onlineshoppingisa.models.ProductDetailCardView;
 import com.example.onlineshoppingisa.models.ProductDetailCardViewGroup;
 import com.example.onlineshoppingisa.roomdatabase.ProductDataBaseModel;
 import com.example.onlineshoppingisa.roomdatabase.ProductRoom;
+import com.example.onlineshoppingisa.util.UserDateDelivery;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
@@ -83,6 +86,8 @@ public class MyCartFeagment extends Fragment {
     private CollectionReference collectionReference;
 
     private String deliverdData;
+
+
     public MyCartFeagment(ArrayList<MobileDetails> mobileDetailsArrayList, ArrayList<FashionDetails> fashionDetailsArrayList,
                           ArrayList<LabtopDetails> labtopDetailsArrayList) {
         this.mobileDetailsArrayList = mobileDetailsArrayList;
@@ -95,7 +100,7 @@ public class MyCartFeagment extends Fragment {
         fashionUserProductDetailCardViews = new ArrayList<>();
         productUserDetailCardViewGroups = new ArrayList<>();
 
-        collectionReference = firebaseFirestore.collection("History Order");
+        //collectionReference = firebaseFirestore.collection("HistoryOrder");
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");// HH:mm:ss");
         String reg_date = df.format(c.getTime());
@@ -119,6 +124,7 @@ public class MyCartFeagment extends Fragment {
         buttonConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                addDataToFireStore();
                 sendEmail();
             }
         });
@@ -160,9 +166,9 @@ public class MyCartFeagment extends Fragment {
                 e.printStackTrace();
             }
 
-
         }
     }
+
     private void showUserProduct(String uid, Context context) {
         Log.d(TAG, "showUserProduct: **** " + productUserDetailCardViewGroups.size());
         productDataBaseModel = ViewModelProviders.of((FragmentActivity) context).get(ProductDataBaseModel.class);
@@ -225,16 +231,34 @@ public class MyCartFeagment extends Fragment {
                 productAdapterGroup.setList(productUserDetailCardViewGroups);
             }
         });
+
+    }
+
+    private void addDataToFireStore() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                for (ProductRoom productRoom : productRoomList)
-                {
-                    collectionReference.document(deliverdData).collection(firebaseAuth.getCurrentUser().getUid())
+                for (ProductRoom productRoom : productRoomList) {
+                    firebaseFirestore.collection("HistoryOrder").document(firebaseAuth.getCurrentUser().getUid())
+                            .collection(deliverdData)
                             .add(productRoom);
                 }
+                UserDateDelivery userDateDelivery = new UserDateDelivery(deliverdData);
+                firebaseFirestore.collection("UserDeliveryData")
+                        .document(firebaseAuth.getCurrentUser().getUid())
+                        .collection("deliverdData")
+                        .add(userDateDelivery)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                Log.d(TAG, "onSuccess: **** " + documentReference.getId());
+                            }
+                        });
+
+                productDataBaseModel.deleteDataForUser(firebaseAuth.getCurrentUser().getUid());
+                showUserProduct(firebaseAuth.getCurrentUser().getUid(),getActivity());
             }
-        },5000);
+        }, 10000);
     }
 
 }

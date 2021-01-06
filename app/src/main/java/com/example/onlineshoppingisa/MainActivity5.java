@@ -247,7 +247,7 @@ public class MainActivity5 extends AppCompatActivity implements ProductDialog.ge
             Calendar c = Calendar.getInstance();
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");// HH:mm:ss");
             String reg_date = df.format(c.getTime());
-            c.add(Calendar.DATE, 3);  // number of days to add
+            c.add(Calendar.DATE, 5);  // number of days to add
             String deliverdData = df.format(c.getTime());
 
             //Log.d(TAG, "addProduct: **** "+deliverdData);

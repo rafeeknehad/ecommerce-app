@@ -23,4 +23,7 @@ public interface ProductDao {
 
     @Query("select * from ProductRoom where userId like :userID")
     LiveData<List<ProductRoom>> getAllData(String userID);
+
+    @Query("delete from ProductRoom where userId like :userId")
+    void deleteDataForUser(String userId);
 }

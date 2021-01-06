@@ -28,6 +28,9 @@ public class ConfirmOrder implements Parcelable {
     private String orderDetailId;
     private String orderId;
 
+    public ConfirmOrder() {
+    }
+
     public ConfirmOrder(String productId, String productImage, String getProductQuantity, String productPrice, String latitude, String longitude, String productName, String productDeliverDate) {
         this.productId = productId;
         this.productImage = productImage;

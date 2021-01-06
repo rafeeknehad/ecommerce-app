@@ -34,6 +34,7 @@ import com.example.onlineshoppingisa.adapter.ProductTypeAdapter;
 import com.example.onlineshoppingisa.fragment.HomeFragment;
 import com.example.onlineshoppingisa.fragment.ModifiadCartViewFragment;
 import com.example.onlineshoppingisa.fragment.MyCartFeagment;
+import com.example.onlineshoppingisa.fragment.MyOrderFragment;
 import com.example.onlineshoppingisa.models.AllCategory;
 import com.example.onlineshoppingisa.models.ConfirmOrder;
 import com.example.onlineshoppingisa.models.FashionDetails;
@@ -457,6 +458,10 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
     }
 
     private void showUserOrder() {
-
+        MyOrderFragment myOrderFragment = new MyOrderFragment(MainActivity3.this);
+        navigationView.setCheckedItem(R.id.my_order);
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_activity3_fragment, myOrderFragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

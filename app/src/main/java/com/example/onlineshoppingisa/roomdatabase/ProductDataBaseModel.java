@@ -23,5 +23,10 @@ public class ProductDataBaseModel extends AndroidViewModel {
         return productDataBase.productDao().getAllData(id);
     }
 
+    public void deleteDataForUser(String userId)
+    {
+        productDataBase.productDao().deleteDataForUser(userId);
+    }
+
 
 }

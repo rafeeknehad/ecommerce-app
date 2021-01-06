@@ -2,9 +2,10 @@ package com.example.onlineshoppingisa.roomdatabase;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 
 import com.example.onlineshoppingisa.models.ConfirmOrder;
-import com.example.onlineshoppingisa.models.OrderInfo;
+import com.google.firebase.firestore.Exclude;
 
 @Entity(primaryKeys = {"userId", "productId"})
 public class ProductRoom {
@@ -17,6 +18,10 @@ public class ProductRoom {
 
     @NonNull
     private ConfirmOrder confirmOrder;
+
+    @Ignore
+    public ProductRoom() {
+    }
 
     public ProductRoom(ConfirmOrder confirmOrder, String userId, String productId) {
         this.confirmOrder = confirmOrder;
