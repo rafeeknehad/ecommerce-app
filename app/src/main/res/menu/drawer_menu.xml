@@ -18,6 +18,14 @@
             android:id="@+id/my_cart"
             android:icon="@drawable/ic_baseline_shopping_cart_24"
             android:title="My Cart" />
+
+        <item android:id="@+id/sign_out"
+            android:icon="@drawable/icons8export26"
+            android:title="Sign Out"/>
+
+        <item android:title="My Order"
+            android:icon="@drawable/ic_baseline_shopping_cart_24"
+            android:id="@+id/my_order"/>
     </group>
 
     <item android:title="Connect">

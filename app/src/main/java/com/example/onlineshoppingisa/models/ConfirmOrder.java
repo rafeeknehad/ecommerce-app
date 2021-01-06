@@ -5,6 +5,18 @@ import android.os.Parcelable;
 
 public class ConfirmOrder implements Parcelable {
 
+    public static final Creator<ConfirmOrder> CREATOR = new Creator<ConfirmOrder>() {
+        @Override
+        public ConfirmOrder createFromParcel(Parcel in) {
+            return new ConfirmOrder(in);
+        }
+
+        @Override
+        public ConfirmOrder[] newArray(int size) {
+            return new ConfirmOrder[size];
+        }
+    };
+
     private String productId;
     private String productImage;
     private String getProductQuantity;
@@ -15,26 +27,6 @@ public class ConfirmOrder implements Parcelable {
     private String productDeliverDate;
     private String orderDetailId;
     private String orderId;
-
-    public String getProductDeliverDate() {
-        return productDeliverDate;
-    }
-
-    public String getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
-    }
-
-    public void setOrderDetailId(String orderDetailId) {
-        this.orderDetailId = orderDetailId;
-    }
-
-    public String getOrderDetailId() {
-        return orderDetailId;
-    }
 
     public ConfirmOrder(String productId, String productImage, String getProductQuantity, String productPrice, String latitude, String longitude, String productName, String productDeliverDate) {
         this.productId = productId;
@@ -55,21 +47,24 @@ public class ConfirmOrder implements Parcelable {
         latitude = in.readString();
         longitude = in.readString();
         productName = in.readString();
+        productDeliverDate = in.readString();
     }
 
+    public String getOrderId() {
+        return orderId;
+    }
 
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
 
-    public static final Creator<ConfirmOrder> CREATOR = new Creator<ConfirmOrder>() {
-        @Override
-        public ConfirmOrder createFromParcel(Parcel in) {
-            return new ConfirmOrder(in);
-        }
+    public String getOrderDetailId() {
+        return orderDetailId;
+    }
 
-        @Override
-        public ConfirmOrder[] newArray(int size) {
-            return new ConfirmOrder[size];
-        }
-    };
+    public void setOrderDetailId(String orderDetailId) {
+        this.orderDetailId = orderDetailId;
+    }
 
     public String getProductId() {
         return productId;
@@ -99,6 +94,11 @@ public class ConfirmOrder implements Parcelable {
         return productName;
     }
 
+    public String getProductDeliverDate() {
+        return productDeliverDate;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -113,5 +113,8 @@ public class ConfirmOrder implements Parcelable {
         dest.writeString(latitude);
         dest.writeString(longitude);
         dest.writeString(productName);
+        dest.writeString(productDeliverDate);
+        dest.writeString(orderDetailId);
+        dest.writeString(orderId);
     }
 }

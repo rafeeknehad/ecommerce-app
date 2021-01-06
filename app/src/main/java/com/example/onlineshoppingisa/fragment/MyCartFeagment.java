@@ -2,6 +2,7 @@ package com.example.onlineshoppingisa.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,7 +34,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
 
@@ -74,10 +77,12 @@ public class MyCartFeagment extends Fragment {
 
     private String userProduct = "";
 
+    private List<ProductRoom> productRoomList;
+
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
     private CollectionReference collectionReference;
 
-    private String deliverdDate;
+    private String deliverdData;
     public MyCartFeagment(ArrayList<MobileDetails> mobileDetailsArrayList, ArrayList<FashionDetails> fashionDetailsArrayList,
                           ArrayList<LabtopDetails> labtopDetailsArrayList) {
         this.mobileDetailsArrayList = mobileDetailsArrayList;
@@ -90,7 +95,12 @@ public class MyCartFeagment extends Fragment {
         fashionUserProductDetailCardViews = new ArrayList<>();
         productUserDetailCardViewGroups = new ArrayList<>();
 
-        collectionReference = firebaseFirestore.collection(firebaseAuth.getCurrentUser().getUid());
+        collectionReference = firebaseFirestore.collection("History Order");
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");// HH:mm:ss");
+        String reg_date = df.format(c.getTime());
+        c.add(Calendar.DATE, 3);  // number of days to add
+        deliverdData = df.format(c.getTime());
     }
 
     @Nullable
@@ -159,6 +169,7 @@ public class MyCartFeagment extends Fragment {
         productDataBaseModel.getLiveDataOfUser(uid).observe((LifecycleOwner) context, new Observer<List<ProductRoom>>() {
             @Override
             public void onChanged(List<ProductRoom> productRooms) {
+                productRoomList = new ArrayList<>(productRooms);
                 allUserProductDetailCardViews.clear();
                 mobileUserProductDetailCardViews = new ArrayList<>();
                 labtopUserProductDetailCardViews = new ArrayList<>();
@@ -214,7 +225,16 @@ public class MyCartFeagment extends Fragment {
                 productAdapterGroup.setList(productUserDetailCardViewGroups);
             }
         });
-
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                for (ProductRoom productRoom : productRoomList)
+                {
+                    collectionReference.document(deliverdData).collection(firebaseAuth.getCurrentUser().getUid())
+                            .add(productRoom);
+                }
+            }
+        },5000);
     }
 
 }

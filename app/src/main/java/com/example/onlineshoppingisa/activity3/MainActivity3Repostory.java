@@ -21,9 +21,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class MainActivity3Repostory {
 
@@ -59,30 +56,28 @@ public class MainActivity3Repostory {
                     String type = dataSnapshot.getKey();
                     if (type.equals(application.getString(R.string.mobile_firebase))) {
                         for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                            Log.d(TAG, "onDataChange: 1111 "+dataSnapshot1.getKey());
+                            Log.d(TAG, "onDataChange: 1111 " + dataSnapshot1.getKey());
                             MobileDetails mobileDetails = dataSnapshot1.getValue(MobileDetails.class);
                             mobileDetails.setKey(dataSnapshot1.getKey());
                             mobileDetailsArrayList.add(mobileDetails);
                         }
                     } else if (type.equals(application.getString(R.string.fashion_firebase))) {
                         for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                            Log.d(TAG, "onDataChange: 1111 "+dataSnapshot1.getKey());
+                            Log.d(TAG, "onDataChange: 1111 " + dataSnapshot1.getKey());
                             FashionDetails fashionDetails = dataSnapshot1.getValue(FashionDetails.class);
                             fashionDetails.setKey(dataSnapshot1.getKey());
                             fashionDetailsArrayList.add(fashionDetails);
                         }
                     } else if (type.equals(application.getString(R.string.product_type_firebase))) {
                         for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                            Log.d(TAG, "onDataChange: 1111 "+dataSnapshot1.getKey());
+                            Log.d(TAG, "onDataChange: 1111 " + dataSnapshot1.getKey());
                             ProductType productType = dataSnapshot1.getValue(ProductType.class);
                             productType.setKey(dataSnapshot1.getKey());
                             productTypeArrayList.add(productType);
                         }
-                    }
-                    else if(type.equals(application.getString(R.string.labtop_firebase)))
-                    {
+                    } else if (type.equals(application.getString(R.string.labtop_firebase))) {
                         for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                            Log.d(TAG, "onDataChange: 1111 "+dataSnapshot1.getKey());
+                            Log.d(TAG, "onDataChange: 1111 " + dataSnapshot1.getKey());
                             LabtopDetails labtopDetails = dataSnapshot1.getValue(LabtopDetails.class);
                             labtopDetails.setKey(dataSnapshot1.getKey());
                             labtopDetailsArrayList.add(labtopDetails);
@@ -90,8 +85,8 @@ public class MainActivity3Repostory {
                     }
 
                 }
-                Log.d(TAG, "onDataChange: 1111 "+productTypeArrayList.size());
-                AllCategory allCategory = new AllCategory(productTypeArrayList,mobileDetailsArrayList,fashionDetailsArrayList,
+                Log.d(TAG, "onDataChange: 1111 " + productTypeArrayList.size());
+                AllCategory allCategory = new AllCategory(productTypeArrayList, mobileDetailsArrayList, fashionDetailsArrayList,
                         labtopDetailsArrayList);
                 mutableLiveData.setValue(allCategory);
             }

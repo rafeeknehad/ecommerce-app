@@ -1,6 +1,7 @@
 package com.example.onlineshoppingisa.activity3;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.util.Log;
@@ -24,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.onlineshoppingisa.CaptureAct;
+import com.example.onlineshoppingisa.MainActivity;
 import com.example.onlineshoppingisa.MainActivity5;
 import com.example.onlineshoppingisa.R;
 import com.example.onlineshoppingisa.adapter.ProductAdapter;
@@ -61,13 +63,12 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
     public static final int REQUEST_CODE_NEWINTENT = 1;
     private static final String TAG = "MainActivity3";
     private static final int REQUEST_SPEECH_INPUT = 1000;
-
+    ProductDataBase productDataBase;
     //ui
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private RecyclerView productTypeRecyclerView;
     private NavigationView navigationView;
-
     //variable
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
@@ -75,40 +76,31 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
     private MenuItem menuItem1;
     private MenuItem menuItem2;
     private androidx.appcompat.widget.SearchView searchView;
-
+    private SharedPreferences sharedPreferences;
     private MainActivity3Model mainActivity3Model;
-
     private ArrayList<MobileDetails> mobileDetailsArrayList;
     private ArrayList<FashionDetails> fashionDetailsArrayList;
     private ArrayList<ProductType> productTypeArrayList;
     private ArrayList<LabtopDetails> labtopDetailsArrayList;
-
-
     private ProductTypeAdapter productTypeAdapter;
-
     private String selectCategtory;
-
-
     private List<ProductDetailCardView> allProductDetailCardViews;
     private List<ProductDetailCardView> mobileProductDetailCardViews;
     private List<ProductDetailCardView> labtopProductDetailCardViews;
     private List<ProductDetailCardView> fashionProductDetailCardViews;
     private List<ProductDetailCardViewGroup> productDetailCardViewGroups;
     private List<ProductDetailCardViewGroup> productUserDetailCardViewGroups;
-
-
     private ProductDataBaseModel productDataBaseModel;
-
     private HomeFragment homeFragment;
     private MyCartFeagment myCartFeagment;
-
     private List<ProductRoom> userProduct;
 
-    ProductDataBase productDataBase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main3);
+
+        sharedPreferences = getSharedPreferences("rememberMe", MODE_PRIVATE);
 
         //initail variable
         mobileDetailsArrayList = new ArrayList<>();
@@ -245,6 +237,17 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
                 return false;
         }
         return true;
+    }
+
+    private void signOut() {
+        Log.d(TAG, "signOut: **** ");
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
+        finish();
+        Intent intent = new Intent(MainActivity3.this, MainActivity.class);
+        startActivity(intent);
+        firebaseAuth.signOut();
     }
 
 
@@ -411,10 +414,8 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
     public void productAdapterSetOnItemClickListenerCartFragment(ProductDetailCardView productDetailCardView, int pos) {
         if (getSupportFragmentManager().findFragmentById(R.id.main_activity3_fragment) instanceof MyCartFeagment) {
             ConfirmOrder confirmOrder = null;
-            for (ProductRoom productRoom : userProduct)
-            {
-                if(productRoom.getProductId().equals(productDetailCardView.getProductId()))
-                {
+            for (ProductRoom productRoom : userProduct) {
+                if (productRoom.getProductId().equals(productDetailCardView.getProductId())) {
                     confirmOrder = productRoom.getConfirmOrder();
                 }
             }
@@ -443,7 +444,19 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
                         .commit();
                 break;
 
+            case R.id.sign_out:
+                signOut();
+                break;
+
+            case R.id.my_order:
+                showUserOrder();
+                break;
+
         }
         return true;
+    }
+
+    private void showUserOrder() {
+
     }
 }

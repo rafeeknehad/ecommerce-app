@@ -194,6 +194,7 @@ public class ModifiadCartViewFragment extends Fragment {
                             public void onSuccess(DocumentReference documentReference) {
                                 Log.d(TAG, "onSuccess: **** "+orderId);
                                 confirmOrder.setOrderId(orderId);
+                                Log.d(TAG, "run: **** "+documentReference.getId());
                                 orderDetailsId = documentReference.getId();
                             }
                         });
@@ -223,7 +224,7 @@ public class ModifiadCartViewFragment extends Fragment {
                             }
                         });
             }
-        }, 5000);
+        }, 8000);
 
     }
 

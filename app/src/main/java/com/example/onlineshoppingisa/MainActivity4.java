@@ -21,7 +21,6 @@ public class MainActivity4 extends AppCompatActivity {
         setContentView(R.layout.activity_main4);
 
         ConfirmOrder confirmOrder = getIntent().getParcelableExtra(MainActivity5.PARAMTER1);
-        Log.d(TAG, "onCreate: **** "+confirmOrder.getProductDeliverDate());
         modifiadCartViewFragment = new ModifiadCartViewFragment(confirmOrder);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.activity_4_recyclerView,modifiadCartViewFragment)
