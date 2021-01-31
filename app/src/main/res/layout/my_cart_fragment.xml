@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -14,13 +15,33 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginEnd="5dp"
         android:textColor="@android:color/white"
-        android:backgroundTint="@android:color/black"
-        android:text="Confirm Order"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5sp"
         android:id="@+id/my_cart_fragment_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        android:background="@android:color/black"
+        android:text="@string/confirm_order"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:targetApi="lollipop" />
+
+    <Button
+        android:id="@+id/my_cart_fragment_set_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5sp"
+        android:background="@android:color/black"
+        android:text="@string/set_location"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@id/my_cart_fragment_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

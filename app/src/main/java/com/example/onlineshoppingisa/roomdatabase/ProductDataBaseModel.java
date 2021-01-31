@@ -15,17 +15,18 @@ public class ProductDataBaseModel extends AndroidViewModel {
     public ProductDataBaseModel(@NonNull Application application) {
         super(application);
         productDataBase = ProductDataBase.grtInstance(application);
-        System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb "+productDataBase.toString());
     }
 
-    public LiveData<List<ProductRoom>> getLiveDataOfUser(String id)
-    {
+    public LiveData<List<ProductRoom>> getLiveDataOfUser(String id) {
         return productDataBase.productDao().getAllData(id);
     }
 
-    public void deleteDataForUser(String userId)
-    {
-        productDataBase.productDao().deleteDataForUser(userId);
+    public void deleteDataForUser(String userId, String productId) {
+        productDataBase.productDao().deleteDataForUser(userId, productId);
+    }
+
+    public LiveData<ProductRoom> findProduct(String userId, String productId) {
+        return productDataBase.productDao().findProduct(userId, productId);
     }
 
 

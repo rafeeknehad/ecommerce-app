@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="10dp"
-    android:background="@color/colorTextHint"
     android:backgroundTint="@color/colorTextHint1"
     app:cardCornerRadius="15dp">
 
@@ -68,24 +67,6 @@
             </LinearLayout>
 
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="-40dp"
-            android:layout_marginLeft="-30dp"
-            android:layout_marginTop="20dp">
-
-            <ImageButton
-                android:id="@+id/product_card_fav"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:background="@null"
-                android:src="@drawable/ic_baseline_favorite_border_24" />
-
-        </LinearLayout>
-
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

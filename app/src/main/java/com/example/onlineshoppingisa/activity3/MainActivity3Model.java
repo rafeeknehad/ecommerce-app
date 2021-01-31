@@ -22,6 +22,7 @@ public class MainActivity3Model extends AndroidViewModel {
 
     public LiveData<AllCategory> getLiveData()
     {
+        System.out.println(".............................");
         return repostory.getAllData();
     }
 }

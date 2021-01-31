@@ -5,7 +5,6 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 
 import com.example.onlineshoppingisa.models.ConfirmOrder;
-import com.google.firebase.firestore.Exclude;
 
 @Entity(primaryKeys = {"userId", "productId"})
 public class ProductRoom {
@@ -17,14 +16,14 @@ public class ProductRoom {
     private String productId;
 
     @NonNull
-    private ConfirmOrder confirmOrder;
+    private Integer quantity;
 
     @Ignore
     public ProductRoom() {
     }
 
-    public ProductRoom(ConfirmOrder confirmOrder, String userId, String productId) {
-        this.confirmOrder = confirmOrder;
+    public ProductRoom(Integer quantity, String userId, String productId) {
+        this.quantity = quantity;
         this.userId = userId;
         this.productId = productId;
     }
@@ -37,8 +36,7 @@ public class ProductRoom {
         return productId;
     }
 
-    @NonNull
-    public ConfirmOrder getConfirmOrder() {
-        return confirmOrder;
+    public Integer getQuantity() {
+        return quantity;
     }
 }

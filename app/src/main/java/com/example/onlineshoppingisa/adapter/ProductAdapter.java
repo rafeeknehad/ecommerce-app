@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -20,10 +19,11 @@ import java.util.ArrayList;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
-    private static final String TAG = "ProductAdapter";
+    //private static final String TAG = "ProductAdapter";
 
     public ArrayList<ProductDetailCardView> productDetailCardViews;
     public Context context;
+
     public ProductAdapterInterface productAdapterInterface;
     public ArrayList<ProductDetailCardView> productDetailCardViewsFull;
 
@@ -38,8 +38,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_detail_cardview, parent, false);
-        ProductViewHolder productViewHolder = new ProductViewHolder(view);
-        return productViewHolder;
+        return new ProductViewHolder(view);
     }
 
     @Override
@@ -52,7 +51,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         holder.productName.setText(productDetailCardView.getProductName());
         holder.productPrice.setText(productDetailCardView.getProductPrice());
         holder.productRatingValue.setText(productDetailCardView.getProductRating());
-        holder.productRating.setRating((Float.valueOf(productDetailCardView.getProductRating()) / 2.0f));
+        holder.productRating.setRating((Float.parseFloat(productDetailCardView.getProductRating()) / 2.0f));
     }
 
     @Override
@@ -60,10 +59,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         return productDetailCardViews.size();
     }
 
+    public void setAdapterInterface(ProductAdapterInterface mListener) {
+        this.productAdapterInterface = mListener;
+    }
 
     public interface ProductAdapterInterface {
-        public void productAdapterSetOnItemClickListener(ProductDetailCardView productDetailCardView, int pos);
-        public void productAdapterSetOnItemClickListenerCartFragment(ProductDetailCardView productDetailCardView,int pos);
+        void productAdapterSetOnItemClickListener(ProductDetailCardView productDetailCardView, int pos);
+
+        void productAdapterSetOnItemClickListenerCartFragment(ProductDetailCardView productDetailCardView, int pos);
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
@@ -73,7 +76,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         private TextView productPrice;
         private RatingBar productRating;
         private TextView productRatingValue;
-        private ImageButton productFav;
 
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -82,16 +84,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             productPrice = itemView.findViewById(R.id.product_card_price);
             productRating = itemView.findViewById(R.id.product_card_rating);
             productRatingValue = itemView.findViewById(R.id.product_card_rating_text);
-            productFav = itemView.findViewById(R.id.product_card_fav);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int pos = getAdapterPosition();
-                    if (pos != RecyclerView.NO_POSITION) {
-                        productAdapterInterface.productAdapterSetOnItemClickListener(productDetailCardViews.get(pos), pos);
-                        productAdapterInterface.productAdapterSetOnItemClickListenerCartFragment(productDetailCardViews.get(pos),pos);
-                    }
+            itemView.setOnClickListener(v -> {
+                int pos = getAdapterPosition();
+                if (pos != RecyclerView.NO_POSITION) {
+                    productAdapterInterface.productAdapterSetOnItemClickListener(productDetailCardViews.get(pos), pos);
+                    productAdapterInterface.productAdapterSetOnItemClickListenerCartFragment(productDetailCardViews.get(pos), pos);
                 }
             });
         }

@@ -1,5 +1,6 @@
 package com.example.onlineshoppingisa;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,8 +26,6 @@ import com.example.onlineshoppingisa.models.ConfirmOrder;
 import com.example.onlineshoppingisa.models.FashionDetails;
 import com.example.onlineshoppingisa.models.LabtopDetails;
 import com.example.onlineshoppingisa.models.MobileDetails;
-import com.example.onlineshoppingisa.roomdatabase.ProductDataBase;
-import com.example.onlineshoppingisa.roomdatabase.ProductRoom;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
@@ -36,10 +35,7 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
-import io.reactivex.CompletableObserver;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
+import java.util.Objects;
 
 public class MainActivity5 extends AppCompatActivity implements ProductDialog.getDataFromProductDialog {
 
@@ -100,35 +96,22 @@ public class MainActivity5 extends AppCompatActivity implements ProductDialog.ge
         confirmOrder = findViewById(R.id.main_activit5_confirm_orde);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        addCart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openDialog(productId);
+        addCart.setOnClickListener(v -> openDialog(productId));
+
+        setLocation.setOnClickListener(v -> {
+            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+            try {
+                startActivityForResult(builder.build(MainActivity5.this), PLACE_PICKER_REQUEST);
+            } catch (GooglePlayServicesRepairableException e) {
+                e.printStackTrace();
+            } catch (GooglePlayServicesNotAvailableException e) {
+                e.printStackTrace();
             }
         });
 
-        setLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-                try {
-                    startActivityForResult(builder.build(MainActivity5.this), PLACE_PICKER_REQUEST);
-                } catch (GooglePlayServicesRepairableException e) {
-                    e.printStackTrace();
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        confirmOrder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addProduct();
-            }
-        });
+        confirmOrder.setOnClickListener(v -> addProduct());
 
         initData();
     }
@@ -138,9 +121,10 @@ public class MainActivity5 extends AppCompatActivity implements ProductDialog.ge
         productDialog.show(getSupportFragmentManager(), "Product Nubmer");
     }
 
+    @SuppressLint("SetTextI18n")
     private void initData() {
-        if (getIntent().getStringExtra(MainActivity3.PARAMTER2).equals(getString(R.string.mobile_firebase))) {
-            MobileDetails mobileDetails = getIntent().getParcelableExtra(MainActivity3.PARAMTER1);
+        if (getIntent().getStringExtra(MainActivity3.PARAMETER2).equals(getString(R.string.mobile_firebase))) {
+            MobileDetails mobileDetails = getIntent().getParcelableExtra(MainActivity3.PARAMETER1);
             Log.d(TAG, "onCreate: 1111 " + mobileDetails.getName());
             linearLayoutContainer.setVisibility(View.VISIBLE);
             textViewStorageTxt.setVisibility(View.VISIBLE);
@@ -157,13 +141,13 @@ public class MainActivity5 extends AppCompatActivity implements ProductDialog.ge
             productStorage.setText(mobileDetails.getStorageCapacity());
             productMemory.setText(mobileDetails.getMemoryRam());
             productBarValue.setText(mobileDetails.getRating());
-            productBarRating.setRating(Float.valueOf(mobileDetails.getRating()) / 2.0f);
+            productBarRating.setRating(Float.parseFloat(mobileDetails.getRating()) / 2.0f);
 
             productImage = mobileDetails.getImage();
             productNameTxt = mobileDetails.getDesc1();
             productPriceTxt = mobileDetails.getPrice();
-        } else if (getIntent().getStringExtra(MainActivity3.PARAMTER2).equals(getString(R.string.fashion_firebase))) {
-            FashionDetails fashionDetails = getIntent().getParcelableExtra(MainActivity3.PARAMTER1);
+        } else if (getIntent().getStringExtra(MainActivity3.PARAMETER2).equals(getString(R.string.fashion_firebase))) {
+            FashionDetails fashionDetails = getIntent().getParcelableExtra(MainActivity3.PARAMETER1);
             Log.d(TAG, "initData: 1111 " + fashionDetails.getCategouryId() + " " + fashionDetails.getName());
             Picasso.with(MainActivity5.this)
                     .load(fashionDetails.getImage())
@@ -175,18 +159,18 @@ public class MainActivity5 extends AppCompatActivity implements ProductDialog.ge
             productPrice.setText(fashionDetails.getPrice() + "EGP");
             productDescription.setText(fashionDetails.getDesc2());
             productBarValue.setText(fashionDetails.getRating());
-            productBarRating.setRating(Float.valueOf(fashionDetails.getRating()) / 2.0f);
+            productBarRating.setRating(Float.parseFloat(fashionDetails.getRating()) / 2.0f);
             productImage = fashionDetails.getImage();
             productNameTxt = fashionDetails.getDesc1();
             productPriceTxt = fashionDetails.getPrice();
 
-        } else if (getIntent().getStringExtra(MainActivity3.PARAMTER2).equals(getString(R.string.labtop_firebase))) {
+        } else if (getIntent().getStringExtra(MainActivity3.PARAMETER2).equals(getString(R.string.labtop_firebase))) {
             linearLayoutContainer.setVisibility(View.VISIBLE);
             textViewStorageTxt.setVisibility(View.INVISIBLE);
             productStorage.setVisibility(View.INVISIBLE);
             textViewMemoryTxt.setText("Hard Disk");
 
-            LabtopDetails labtopDetails = getIntent().getParcelableExtra(MainActivity3.PARAMTER1);
+            LabtopDetails labtopDetails = getIntent().getParcelableExtra(MainActivity3.PARAMETER1);
             Log.d(TAG, "initData: 1111 " + labtopDetails.getCategouryId() + " " + labtopDetails.getName());
             Picasso.with(MainActivity5.this)
                     .load(labtopDetails.getImage())
@@ -197,7 +181,7 @@ public class MainActivity5 extends AppCompatActivity implements ProductDialog.ge
             productPrice.setText(labtopDetails.getPrice() + "EGP");
             productDescription.setText(labtopDetails.getDesc2());
             productBarValue.setText(labtopDetails.getRating());
-            productBarRating.setRating(Float.valueOf(labtopDetails.getRating()) / 2.0f);
+            productBarRating.setRating(Float.parseFloat(labtopDetails.getRating()) / 2.0f);
             productMemory.setText(labtopDetails.getHardDisk());
             productImage = labtopDetails.getImage();
             productNameTxt = labtopDetails.getDesc1();
@@ -211,9 +195,8 @@ public class MainActivity5 extends AppCompatActivity implements ProductDialog.ge
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PLACE_PICKER_REQUEST) {
-            if (resultCode == RESULT_OK) {
+            if (resultCode == RESULT_OK && data != null) {
                 Place place = PlacePicker.getPlace(data, MainActivity5.this);
-                StringBuilder stringBuilder = new StringBuilder();
                 latitude = String.valueOf(place.getLatLng().latitude);
                 longitude = String.valueOf(place.getLatLng().longitude);
             }
@@ -245,14 +228,13 @@ public class MainActivity5 extends AppCompatActivity implements ProductDialog.ge
 
         if(quantity>0) {
             Calendar c = Calendar.getInstance();
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");// HH:mm:ss");
-            String reg_date = df.format(c.getTime());
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");// HH:mm:ss");
+            //String reg_date = df.format(c.getTime());
             c.add(Calendar.DATE, 5);  // number of days to add
-            String deliverdData = df.format(c.getTime());
+            String deliverData = df.format(c.getTime());
 
-            //Log.d(TAG, "addProduct: **** "+deliverdData);
             ConfirmOrder confirmOrder = new ConfirmOrder(productId, productImage, String.valueOf(quantity),
-                    productPriceTxt, latitude, longitude, productNameTxt, deliverdData);
+                    productPriceTxt, latitude, longitude, productNameTxt, deliverData);
 
             Log.d(TAG, "addProduct: **** "+confirmOrder.getProductDeliverDate());
             Intent intent = new Intent(MainActivity5.this, MainActivity4.class);
@@ -262,6 +244,5 @@ public class MainActivity5 extends AppCompatActivity implements ProductDialog.ge
         else {
             Toast.makeText(this, "Please Determine the number of product", Toast.LENGTH_SHORT).show();
         }
-
     }
 }

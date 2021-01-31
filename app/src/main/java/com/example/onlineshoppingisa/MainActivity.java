@@ -4,30 +4,22 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.onlineshoppingisa.activity2.MainActivity2;
 import com.example.onlineshoppingisa.activity2.MainActivity2Model;
 import com.example.onlineshoppingisa.activity3.MainActivity3;
-import com.example.onlineshoppingisa.fragment.HomeFragment;
-import com.example.onlineshoppingisa.models.User;
-import com.example.onlineshoppingisa.roomdatabase.ProductDataBase;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.List;
+import java.util.Objects;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,14 +30,10 @@ public class MainActivity extends AppCompatActivity {
     //ui
     private TextInputLayout emailTxt;
     private TextInputLayout passTxt;
-    private Button loginBtn;
-    private Button signinBtn;
-    private TextView forgetPass;
-    private CheckBox rememberMe;
 
     //variable
     private MainActivity2Model mainActivity2Model;
-    private List<User> allDataOfUsers;
+    //private List<User> allDataOfUsers;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -54,97 +42,72 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         emailTxt = findViewById(R.id.input_email);
         passTxt = findViewById(R.id.input_password);
-        loginBtn = findViewById(R.id.btn_login);
-        signinBtn = findViewById(R.id.btn_create_account);
-        forgetPass = findViewById(R.id.txt_forget_pass);
-        rememberMe = findViewById(R.id.remember_me);
+        Button loginBtn = findViewById(R.id.btn_login);
+        Button signBtn = findViewById(R.id.btn_create_account);
+        TextView forgetPass = findViewById(R.id.txt_forget_pass);
+        CheckBox rememberMe = findViewById(R.id.remember_me);
         mainActivity2Model = ViewModelProviders.of(this).get(MainActivity2Model.class);
         sharedPreferences = getSharedPreferences("rememberMe", MODE_PRIVATE);
 
 
-        Boolean rememberMeBoolean = sharedPreferences.getBoolean("checked", false);
-        if (rememberMeBoolean == true) {
+        boolean rememberMeBoolean = sharedPreferences.getBoolean("checked", false);
+        if (rememberMeBoolean) {
             String userName = sharedPreferences.getString("userName", null);
             String password = sharedPreferences.getString("password", null);
-            mainActivity2Model.loginUser(userName, password).observe(MainActivity.this, new Observer<Boolean>() {
-                @Override
-                public void onChanged(Boolean aBoolean) {
-                    Intent intent = new Intent(MainActivity.this, MainActivity3.class);
-                    startActivityForResult(intent, REQUEST_CODE);
-                }
+            mainActivity2Model.loginUser(userName, password).observe(MainActivity.this, aBoolean -> {
+                Intent intent = new Intent(MainActivity.this, MainActivity3.class);
+                startActivityForResult(intent, REQUEST_CODE);
             });
-        } else if (rememberMeBoolean == false) {
+        } else {
             Toast.makeText(this, "Please Login IN", Toast.LENGTH_SHORT).show();
         }
 
-        mainActivity2Model.getAllUser().observe(this, new Observer<List<User>>() {
-            @Override
-            public void onChanged(List<User> users) {
-                Log.d(TAG, "onChanged: **** "+users.size());
-                allDataOfUsers = users;
-            }
+        mainActivity2Model.getAllUser().observe(this, users -> {
+            Log.d(TAG, "onChanged: **** " + users.size());
+            //allDataOfUsers = users;
         });
 
-        signinBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), MainActivity2.class);
-                startActivityForResult(intent, REQUEST_CODE);
-            }
+        signBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), MainActivity2.class);
+            startActivityForResult(intent, REQUEST_CODE);
         });
 
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String email = emailTxt.getEditText().getText().toString().trim();
-                String pass = passTxt.getEditText().getText().toString().trim();
-                mainActivity2Model.loginUser(email, pass).observe(MainActivity.this, new Observer<Boolean>() {
-                    @Override
-                    public void onChanged(Boolean aBoolean) {
-                        if(aBoolean) {
-                            Intent intent = new Intent(MainActivity.this, MainActivity3.class);
-                            startActivityForResult(intent, REQUEST_CODE);
-                        }
-                        else{
-                            Toast.makeText(MainActivity.this, "Please Sign Up", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }
-        });
-
-        forgetPass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-                firebaseAuth.sendPasswordResetEmail(emailTxt.getEditText().getText().toString().trim())
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isComplete()) {
-                                    Toast.makeText(MainActivity.this, "Send Emai", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-            }
-        });
-
-        rememberMe.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putBoolean("checked", true);
-                    editor.putString("userName", emailTxt.getEditText().getText().toString().trim());
-                    editor.putString("password", passTxt.getEditText().getText().toString().trim());
-                    editor.apply();
-                } else if (!isChecked) {
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putBoolean("checked", false);
-                    editor.putString("userName", "");
-                    editor.putString("password", "");
-                    editor.apply();
+        loginBtn.setOnClickListener(v -> {
+            String email = Objects.requireNonNull(emailTxt.getEditText()).getText().toString().trim();
+            String pass = Objects.requireNonNull(passTxt.getEditText()).getText().toString().trim();
+            mainActivity2Model.loginUser(email, pass).observe(MainActivity.this, aBoolean -> {
+                if (aBoolean) {
+                    Intent intent = new Intent(MainActivity.this, MainActivity3.class);
+                    startActivityForResult(intent, REQUEST_CODE);
+                } else {
+                    Toast.makeText(MainActivity.this, "Please Sign Up", Toast.LENGTH_SHORT).show();
                 }
+            });
+        });
+
+        forgetPass.setOnClickListener(v -> {
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+            firebaseAuth.sendPasswordResetEmail(Objects.requireNonNull(emailTxt.getEditText()).getText().toString().trim())
+                    .addOnCompleteListener(task -> {
+                        if (task.isComplete()) {
+                            Toast.makeText(MainActivity.this, "Send Email", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        });
+
+        rememberMe.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("checked", true);
+                editor.putString("userName", Objects.requireNonNull(emailTxt.getEditText()).getText().toString().trim());
+                editor.putString("password", Objects.requireNonNull(passTxt.getEditText()).getText().toString().trim());
+                editor.apply();
+            } else {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("checked", false);
+                editor.putString("userName", "");
+                editor.putString("password", "");
+                editor.apply();
             }
         });
     }

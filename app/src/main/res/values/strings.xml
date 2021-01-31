@@ -13,4 +13,6 @@
     <string name="labtop_firebase">Labtop</string>
     <string name="memory_of_ram">Memory Of Ram:</string>
     <string name="home_page">home_page</string>
+    <string name="confirm_order">Confirm Order</string>
+    <string name="set_location">Set Location</string>
 </resources>

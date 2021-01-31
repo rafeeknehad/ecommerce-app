@@ -35,9 +35,10 @@ public class MainActivity3Repostory {
     private Application application;
 
     public MainActivity3Repostory(Application application) {
+        Log.d(TAG, "MainActivity3Repostory: ....................");
         mutableLiveData = new MediatorLiveData<>();
         this.application = application;
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference = FirebaseDatabase.getInstance().getReference("");
         mobileDetailsArrayList = new ArrayList<>();
         fashionDetailsArrayList = new ArrayList<>();
         productTypeArrayList = new ArrayList<>();
@@ -45,9 +46,11 @@ public class MainActivity3Repostory {
     }
 
     public LiveData<AllCategory> getAllData() {
+        Log.d(TAG, "getAllData: ......................a");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d(TAG, "onDataChange: .....................b");
                 mobileDetailsArrayList.clear();
                 fashionDetailsArrayList.clear();
                 productTypeArrayList.clear();
@@ -93,6 +96,7 @@ public class MainActivity3Repostory {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                Log.d(TAG, "onCancelled: ...... "+error.getMessage());
                 Log.d(TAG, "onCancelled: 1111 " + error.getMessage());
             }
         });

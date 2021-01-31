@@ -19,13 +19,13 @@ import com.example.onlineshoppingisa.models.ProductDetailCardViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductAdapterGroup extends RecyclerView.Adapter<ProductAdapterGroup.ProductAdapterGropViewHolder> implements Filterable {
+public class ProductAdapterGroup extends RecyclerView.Adapter<ProductAdapterGroup.ProductAdapterGroupViewHolder> implements Filterable {
 
     private static final String TAG = "ProductAdapterGroup";
 
     private Context context;
     private List<ProductDetailCardViewGroup> productDetailCardViewGroups;
-    private ProductAdapter productAdapter;
+    public ProductAdapter productAdapter;
     private ProductAdapterGroupInterface productAdapterGroupInterface;
     private List<ProductDetailCardViewGroup> productDetailCardViewGroupsFull;
 
@@ -38,22 +38,19 @@ public class ProductAdapterGroup extends RecyclerView.Adapter<ProductAdapterGrou
 
     @NonNull
     @Override
-    public ProductAdapterGropViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ProductAdapterGroupViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_detail_cardview_group, parent, false);
-        ProductAdapterGropViewHolder viewHolder = new ProductAdapterGropViewHolder(view);
-        return viewHolder;
+        return new ProductAdapterGroupViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ProductAdapterGropViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ProductAdapterGroupViewHolder holder, int position) {
         ProductDetailCardViewGroup item = productDetailCardViewGroups.get(position);
         holder.textView.setText(item.getProductType());
         productAdapter = new ProductAdapter((ArrayList<ProductDetailCardView>) item.getProductTypeList(), context);
         holder.recyclerView.setNestedScrollingEnabled(true);
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
         holder.recyclerView.setAdapter(productAdapter);
-
-
     }
 
     @Override
@@ -66,7 +63,6 @@ public class ProductAdapterGroup extends RecyclerView.Adapter<ProductAdapterGrou
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
-                System.out.println("tttttttttttttttttttttttttt "+constraint);
                 List<ProductDetailCardViewGroup> filterList = new ArrayList<>();
                 if (constraint == null || constraint.length() == 0) {
                     filterList.addAll(productDetailCardViewGroupsFull);
@@ -92,21 +88,25 @@ public class ProductAdapterGroup extends RecyclerView.Adapter<ProductAdapterGrou
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 productDetailCardViewGroups.clear();
-                productDetailCardViewGroups.addAll((List) results.values);
+                productDetailCardViewGroups.addAll((List)results.values);
                 notifyDataSetChanged();
             }
         };
     }
 
-    public interface ProductAdapterGroupInterface {
-        public void ProductAdapterGropSetOnClicked(int pos);
+    public void setProductAdapterGroupInterface(ProductAdapterGroupInterface mListener) {
+        productAdapterGroupInterface = mListener;
     }
 
-    public class ProductAdapterGropViewHolder extends RecyclerView.ViewHolder {
+    public interface ProductAdapterGroupInterface {
+        public void ProductAdapterGroupSetOnClicked(int pos);
+    }
+
+    public static class ProductAdapterGroupViewHolder extends RecyclerView.ViewHolder {
         private TextView textView;
         private RecyclerView recyclerView;
 
-        public ProductAdapterGropViewHolder(@NonNull View itemView) {
+        public ProductAdapterGroupViewHolder(@NonNull View itemView) {
             super(itemView);
 
             textView = itemView.findViewById(R.id.prodduct_detail_cardview_group_text);

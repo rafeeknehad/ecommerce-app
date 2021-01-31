@@ -39,12 +39,12 @@ public class UserOrderAdapter extends RecyclerView.Adapter<UserOrderAdapter.User
     @Override
     public void onBindViewHolder(@NonNull UserOrderViewHolder holder, int position) {
         ProductRoom item = mProductRoomList.get(position);
-        Picasso.with(mContext).load(item.getConfirmOrder().getProductImage())
+        /*Picasso.with(mContext).load(item.getConfirmOrder().getProductImage())
                 .into(holder.mImageView);
 
         holder.mProductNameTxt.setText(item.getConfirmOrder().getProductName());
         holder.mProductQuantityTxt.setText(item.getConfirmOrder().getGetProductQuantity());
-        holder.mProductPriceTxt.setText(item.getConfirmOrder().getProductPrice());
+        holder.mProductPriceTxt.setText(item.getConfirmOrder().getProductPrice());*/
     }
 
     @Override

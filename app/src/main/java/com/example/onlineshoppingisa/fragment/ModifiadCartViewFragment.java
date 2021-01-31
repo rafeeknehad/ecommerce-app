@@ -96,12 +96,12 @@ public class ModifiadCartViewFragment extends Fragment {
         productDataBase = ProductDataBase.grtInstance(getActivity());
 
         initialData();
-        confirmCart.setOnClickListener(new View.OnClickListener() {
+        /*confirmCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addOrder();
             }
-        });
+        });*/
 
         locationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,7 +172,7 @@ public class ModifiadCartViewFragment extends Fragment {
         getLocation(confirmOrder.getLatitude(),confirmOrder.getLongitude());
     }
 
-    private void addOrder() {
+    /*private void addOrder() {
         Orders orders = new Orders(confirmOrder.getProductDeliverDate(), firebaseAuth.getCurrentUser().getUid(),
                 productLocation.getText().toString());
         orderCollection.add(orders)
@@ -226,7 +226,7 @@ public class ModifiadCartViewFragment extends Fragment {
             }
         }, 8000);
 
-    }
+    }*/
 
     private void getLocation(String x,String y) {
         String location = new String();
