@@ -15,4 +15,6 @@
     <string name="home_page">home_page</string>
     <string name="confirm_order">Confirm Order</string>
     <string name="set_location">Set Location</string>
+    <string name="todo">TODO</string>
+    <string name="total_price">Total Price:</string>
 </resources>

@@ -11,18 +11,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.onlineshoppingisa.R;
-import com.example.onlineshoppingisa.adapter.ProductAdapter;
 import com.example.onlineshoppingisa.adapter.ProductAdapterGroup;
 import com.example.onlineshoppingisa.models.FashionDetails;
 import com.example.onlineshoppingisa.models.LabtopDetails;
@@ -42,6 +40,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -59,6 +58,8 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import static java.lang.Integer.parseInt;
+
 public class MyCartFragment extends Fragment {
 
     private static final String TAG = "MyCartFragment";
@@ -68,7 +69,7 @@ public class MyCartFragment extends Fragment {
     private List<MobileDetails> mobileDetailsArrayList;
     private List<FashionDetails> fashionDetailsArrayList;
     private List<LabtopDetails> laptopDetailsArrayList;
-    private List<ProductDetailCardView> all;
+    public List<ProductDetailCardView> all;
     private List<ProductDetailCardView> mobileUserProductDetailCardViews;
     private List<ProductDetailCardView> laptopUserProductDetailCardViews;
     private List<ProductDetailCardView> fashionUserProductDetailCardViews;
@@ -82,7 +83,9 @@ public class MyCartFragment extends Fragment {
     private String mUserId;
     private String mLocation;
     private String mOrderId;
-
+    private String mUserProduct;
+    private long totalPrice;
+    private TextView mTotalPrice;
 
     public MyCartFragment() {
         this.mobileDetailsArrayList = new ArrayList<>();
@@ -122,31 +125,17 @@ public class MyCartFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.my_cart_fragment, container, false);
         mProductDataBaseModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(ProductDataBaseModel.class);
-        showUserProduct();
         Button buttonConfirm = view.findViewById(R.id.my_cart_fragment_btn);
         Button buttonLocation = view.findViewById(R.id.my_cart_fragment_set_location);
         RecyclerView recyclerView = view.findViewById(R.id.my_cart_fragment_recyclerview);
+        mTotalPrice = view.findViewById(R.id.my_cart_fragment_total_price);
         productUserDetailCardViewGroups = new ArrayList<>();
         productAdapterGroup = new ProductAdapterGroup(getActivity(), productUserDetailCardViewGroups);
         recyclerView.setAdapter(productAdapterGroup);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
-        productAdapterGroup.productAdapter.setAdapterInterface(new ProductAdapter.ProductAdapterInterface() {
-            @Override
-            public void productAdapterSetOnItemClickListener(ProductDetailCardView productDetailCardView, int pos) {
+        showUserProduct();
 
-            }
-
-            @Override
-            public void productAdapterSetOnItemClickListenerCartFragment(ProductDetailCardView productDetailCardView, int pos) {
-                Log.d(TAG, "productAdapterSetOnItemClickListenerCartFragment: ---- " + productDetailCardView.getProductId());
-            }
-        });
-
-
-        buttonConfirm.setOnClickListener(v -> {
-            setOrder();
-            sendEmail();
-        });
+        buttonConfirm.setOnClickListener(v -> setOrder());
 
         buttonLocation.setOnClickListener(v -> setLocation());
         return view;
@@ -164,6 +153,7 @@ public class MyCartFragment extends Fragment {
     }
 
     private void sendEmail() {
+        DecimalFormat format = new DecimalFormat("###,###,###.00");
         Properties properties = new Properties();
         properties.put("mail.smtp.host", "smtp.gmail.com");
         properties.put("mail.smtp.socketFactory.port", "465");
@@ -189,30 +179,39 @@ public class MyCartFragment extends Fragment {
                 message.setFrom(new InternetAddress("rafeek.nehad9823@gmail.com"));
                 message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("rafeeknehad333@gmail.com"));
                 message.setSubject("Confirm Order");
-                String userProduct = "";
-                message.setText(userProduct);
+                mUserProduct = "Order Id: " + mOrderId + "\n" + mUserProduct;
+                mUserProduct = mUserProduct + "\n" + "Total Order Price: " + format.format(totalPrice) + "$";
+                message.setText(mUserProduct);
                 Transport.send(message);
-                Toast.makeText(getActivity(), "Succsess", Toast.LENGTH_SHORT).show();
 
             } catch (MessagingException e) {
-                Log.d(TAG, "sendEmail: 111111111111111111 " + e.getMessage());
                 e.printStackTrace();
             }
 
         }
     }
 
-    private void showUserProduct() {
+    @SuppressLint("SetTextI18n")
+    public void showUserProduct() {
+        mUserProduct = "";
+        totalPrice = 0;
+        DecimalFormat format = new DecimalFormat("###,###,###.00");
+        productUserDetailCardViewGroups = new ArrayList<>();
+        mobileUserProductDetailCardViews = new ArrayList<>();
+        fashionUserProductDetailCardViews = new ArrayList<>();
+        laptopUserProductDetailCardViews = new ArrayList<>();
         mProductDataBaseModel.getLiveDataOfUser(mUserId).observe(Objects.requireNonNull(getActivity()), productRooms -> {
-            Log.d(TAG, "showUserProduct: ..... rr " + productRooms.size());
             mProductRoomList = productRooms;
             for (ProductRoom item : productRooms) {
-                Log.d(TAG, "showUserProduct: ..... " + item.getProductId());
                 if (item.getProductId().contains("mobile")) {
                     for (MobileDetails mobile : mobileDetailsArrayList) {
                         if (item.getProductId().equals(mobile.getKey())) {
+                            totalPrice += parseInt(mobile.getPrice()) * item.getQuantity();
+                            mUserProduct += "Name: " + mobile.getName() + "\n" + "Quantity: " + item.getQuantity() + "\n" +
+                                    "Total price: " + format.format(parseInt(mobile.getPrice()) * item.getQuantity())
+                                    + "$" + "\n-----------------------------------------------------------------";
                             mobileUserProductDetailCardViews.add(new ProductDetailCardView(item.getProductId(),
-                                    getResources().getString(R.string.mobile_firebase),
+                                    getActivity().getResources().getString(R.string.mobile_firebase),
                                     mobile.getName(), mobile.getPrice(), mobile.getRating(),
                                     mobile.getImage()));
                             break;
@@ -221,8 +220,13 @@ public class MyCartFragment extends Fragment {
                 } else if (item.getProductId().contains("labtop")) {
                     for (LabtopDetails laptop : laptopDetailsArrayList) {
                         if (item.getProductId().equals(laptop.getKey())) {
-                            mobileUserProductDetailCardViews.add(new ProductDetailCardView(item.getProductId(),
-                                    getResources().getString(R.string.labtop_firebase),
+                            totalPrice += parseInt(laptop.getPrice()) * item.getQuantity();
+                            mUserProduct = mUserProduct + ("Name: " + laptop.getName() + "\n" + "Quantity: " + item.getQuantity() + "\n" +
+                                    "Total price: " + format.format(parseInt(laptop.getPrice()) * item.getQuantity())
+                                    + "$" + "\n-----------------------------------------------------------------");
+
+                            laptopUserProductDetailCardViews.add(new ProductDetailCardView(item.getProductId(),
+                                    getActivity().getResources().getString(R.string.labtop_firebase),
                                     laptop.getName(), laptop.getPrice(), laptop.getRating(),
                                     laptop.getImage()));
                             break;
@@ -231,8 +235,14 @@ public class MyCartFragment extends Fragment {
                 } else {
                     for (FashionDetails fashion : fashionDetailsArrayList) {
                         if (item.getProductId().equals(fashion.getKey())) {
-                            mobileUserProductDetailCardViews.add(new ProductDetailCardView(item.getProductId(),
-                                    getResources().getString(R.string.fashion_firebase),
+                            totalPrice += parseInt(fashion.getPrice()) * item.getQuantity();
+                            mUserProduct = mUserProduct + ("Name: " + fashion.getName() + "\n" +
+                                    "Quantity: " + item.getQuantity() + "\n" +
+                                    "Total price: " + format.format(parseInt(fashion.getPrice()) * item.getQuantity())
+                                    + "$" + "\n-----------------------------------------------------------------");
+
+                            fashionUserProductDetailCardViews.add(new ProductDetailCardView(item.getProductId(),
+                                    getActivity().getResources().getString(R.string.fashion_firebase),
                                     fashion.getName(), fashion.getPrice(), fashion.getRating(),
                                     fashion.getImage()));
                             break;
@@ -240,26 +250,23 @@ public class MyCartFragment extends Fragment {
                     }
                 }
             }
+            mTotalPrice.setText("Total Price: " + format.format(totalPrice) + " $");
             all.addAll(mobileUserProductDetailCardViews);
             all.addAll(laptopUserProductDetailCardViews);
             all.addAll(fashionUserProductDetailCardViews);
-            if (mobileUserProductDetailCardViews.size() != 0) {
-                productUserDetailCardViewGroups.add(new ProductDetailCardViewGroup(getString(R.string.mobile_firebase), mobileUserProductDetailCardViews));
-            }
-            if (fashionUserProductDetailCardViews.size() != 0) {
-                productUserDetailCardViewGroups.add(new ProductDetailCardViewGroup(getString(R.string.fashion_firebase), fashionUserProductDetailCardViews));
-            }
-            if (laptopUserProductDetailCardViews.size() != 0) {
-                productUserDetailCardViewGroups.add(new ProductDetailCardViewGroup(getString(R.string.labtop_firebase), laptopUserProductDetailCardViews));
-            }
+            if (mobileUserProductDetailCardViews.size() != 0)
+                productUserDetailCardViewGroups.add(new ProductDetailCardViewGroup(getActivity().getString(R.string.mobile_firebase), mobileUserProductDetailCardViews));
+            if (fashionUserProductDetailCardViews.size() != 0)
+                productUserDetailCardViewGroups.add(new ProductDetailCardViewGroup(getActivity().getString(R.string.fashion_firebase), fashionUserProductDetailCardViews));
+            if (laptopUserProductDetailCardViews.size() != 0)
+                productUserDetailCardViewGroups.add(new ProductDetailCardViewGroup(getActivity().getString(R.string.labtop_firebase), laptopUserProductDetailCardViews));
             productAdapterGroup.setList(productUserDetailCardViewGroups);
-
         });
-
     }
 
     private void setOrder() {
         Calendar c = Calendar.getInstance();
+
         @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");// HH:mm:ss");
         c.add(Calendar.DATE, 3);  // number of days to add
         String deliverData = df.format(c.getTime());
@@ -283,18 +290,16 @@ public class MyCartFragment extends Fragment {
         Log.d(TAG, "setOrderDetails: ..... " + mOrderId);
         CollectionReference collectionReference = FirebaseFirestore
                 .getInstance()
-                .collection("Order Details")
+                .collection("OrderDetails")
                 .document(mUserId)
-                .collection("Order Details");
+                .collection("OrderDetails");
         for (ProductRoom productRoom : mProductRoomList) {
             OrderDetails orderDetails = new OrderDetails(productRoom.getProductId(),
                     mOrderId,
                     productRoom.getQuantity().toString());
 
             collectionReference.add(orderDetails)
-                    .addOnSuccessListener(documentReference -> {
-
-                    })
+                    .addOnSuccessListener(documentReference -> confirmOrder())
                     .addOnFailureListener(e -> {
 
                     });
@@ -338,5 +343,11 @@ public class MyCartFragment extends Fragment {
         if (knownName != null) location += knownName + ",";
 
         mLocation = location;
+    }
+
+    private void confirmOrder() {
+        sendEmail();
+        mProductDataBaseModel.deleteAllOrderFromUser(mUserId);
+        showUserProduct();
     }
 }

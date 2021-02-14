@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +11,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,43 +18,27 @@ import androidx.fragment.app.Fragment;
 
 import com.example.onlineshoppingisa.R;
 import com.example.onlineshoppingisa.models.ConfirmOrder;
-import com.example.onlineshoppingisa.models.OrderDetails;
-import com.example.onlineshoppingisa.models.Orders;
 import com.example.onlineshoppingisa.roomdatabase.ProductDataBase;
-import com.example.onlineshoppingisa.roomdatabase.ProductRoom;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-
-import io.reactivex.CompletableObserver;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class ModifiadCartViewFragment extends Fragment {
 
     private static final int PLACE_PICKER_REQUEST = 1;
-    private static final String TAG = "ModifiadCartViewFragmen";
+    public static final String TAG = "ModifiedCartViewFragment";
 
     private ConfirmOrder confirmOrder;
-    private FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-    private CollectionReference orderDetailsCollection = firestore.collection("OrderDetails");
-    private CollectionReference orderCollection = firestore.collection("Orders");
-    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private String orderId;
     private ProductDataBase productDataBase;
     private String orderDetailsId;
@@ -148,7 +129,6 @@ public class ModifiadCartViewFragment extends Fragment {
 
     private void initialData() {
 
-        Log.d(TAG, "initialData: **** "+confirmOrder.getProductDeliverDate());
         Picasso.with(getActivity())
                 .load(confirmOrder.getProductImage())
                 .into(productimageView);

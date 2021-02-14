@@ -13,16 +13,15 @@ import com.example.onlineshoppingisa.models.FashionDetails;
 public class MainActivity3Model extends AndroidViewModel {
 
     private MutableLiveData<FashionDetails> objectMutableLiveData;
-    private MainActivity3Repostory repostory;
+    private MainActivity3Repostory repository;
 
     public MainActivity3Model(@NonNull Application application) {
         super(application);
-        repostory = new MainActivity3Repostory(application);
+        repository = new MainActivity3Repostory(application);
     }
 
     public LiveData<AllCategory> getLiveData()
     {
-        System.out.println(".............................");
-        return repostory.getAllData();
+        return repository.getAllData();
     }
 }

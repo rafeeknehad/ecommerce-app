@@ -73,7 +73,6 @@ public class MainActivity2Reposotory {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            Log.d(TAG, "onComplete: ****" + Thread.currentThread().getName());
             firebaseAuth.createUserWithEmailAndPassword(user.getEmail(), user.getPass())
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
@@ -104,7 +103,6 @@ public class MainActivity2Reposotory {
                                 user.setIdKey(documentSnapshot.getId());
                                 data.add(user);
                             }
-                            Log.d(TAG, "onSuccess: **** "+Thread.currentThread().getName().toString());
                             usersLiveData.setValue(data);
                         }
                     })

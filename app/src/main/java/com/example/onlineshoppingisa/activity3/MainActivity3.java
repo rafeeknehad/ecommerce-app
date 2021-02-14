@@ -19,7 +19,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.MenuItemCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,11 +41,8 @@ import com.example.onlineshoppingisa.models.ProductDetailCardView;
 import com.example.onlineshoppingisa.models.ProductDetailCardViewGroup;
 import com.example.onlineshoppingisa.models.ProductType;
 import com.example.onlineshoppingisa.roomdatabase.ProductDataBase;
-import com.example.onlineshoppingisa.roomdatabase.ProductDataBaseModel;
-import com.example.onlineshoppingisa.roomdatabase.ProductRoom;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -78,13 +74,14 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
     private ArrayList<ProductType> productTypeArrayList;
     private ArrayList<LabtopDetails> laptopDetailsArrayList;
     private String selectCategory;
-    private List<ProductDetailCardView> allProductDetailCardViews;
+    public List<ProductDetailCardView> allProductDetailCardViews;
     private List<ProductDetailCardView> mobileProductDetailCardViews;
     private List<ProductDetailCardView> laptopProductDetailCardViews;
     private List<ProductDetailCardView> fashionProductDetailCardViews;
     private List<ProductDetailCardViewGroup> productDetailCardViewGroups;
     private HomeFragment homeFragment;
     private MyCartFragment myCartFragment;
+    private BottomSheetDialog mBottomSheetDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +97,7 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
         MainActivity3Model mainActivity3Model = ViewModelProviders.of(this).get(MainActivity3Model.class);
         productDataBase = ProductDataBase.grtInstance(MainActivity3.this);
 
-        ProductDataBaseModel productDataBaseModel = ViewModelProviders.of(MainActivity3.this).get(ProductDataBaseModel.class);
+//        ProductDataBaseModel productDataBaseModel = ViewModelProviders.of(MainActivity3.this).get(ProductDataBaseModel.class);
         selectCategory = "All";
 
         allProductDetailCardViews = new ArrayList<>();
@@ -112,12 +109,12 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
         //initail xml
         productTypeRecyclerView = findViewById(R.id.main_activity3_recycler_view_product_type);
         //ui
-        Toolbar toolbar = findViewById(R.id.drawerlayout_toolbar);
+        Toolbar toolbar = findViewById(R.id.drawer_layout_toolbar);
         drawerLayout = findViewById(R.id.drawerlayout_id);
-        navigationView = findViewById(R.id.drawerlayout_nav_view);
+        navigationView = findViewById(R.id.drawer_layout_nav_view);
 
         firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+//        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
 
         setSupportActionBar(toolbar);
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
@@ -126,15 +123,11 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
-        productDataBaseModel.getLiveDataOfUser(firebaseAuth.getCurrentUser().getUid()).observe(this, new Observer<List<ProductRoom>>() {
-            @Override
-            public void onChanged(List<ProductRoom> productRooms) {
-            }
-        });
+//        productDataBaseModel.getLiveDataOfUser(firebaseAuth.getCurrentUser().getUid()).observe(this, productRooms -> {
+//        });
 
         myCartFragment = new MyCartFragment();
         mainActivity3Model.getLiveData().observe(this, allCategory -> {
-            Log.d(TAG, "onChanged: .... " + allCategory.getLabtopDetails().size());
             Toast.makeText(getApplicationContext(), "" + allCategory.getLabtopDetails().size(), Toast.LENGTH_LONG).show();
             mobileDetailsArrayList = new ArrayList<>(allCategory.getMobileDetailsList());
             fashionDetailsArrayList = new ArrayList<>(allCategory.getFashionDetailsList());
@@ -226,7 +219,6 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
     }
 
     private void signOut() {
-        Log.d(TAG, "signOut: **** ");
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.apply();
@@ -309,7 +301,7 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
     @Override
     public void productTypeAdapterSetOnItemClick(int pos) {
         selectCategory = productTypeArrayList.get(pos).getType();
-        initailProductDetailCardViews();
+        initialProductDetailCardViews();
         productDetailCardViewGroups = new ArrayList<>();
         if (selectCategory.equals("All")) {
             productDetailCardViewGroups.add(new ProductDetailCardViewGroup(getString(R.string.mobile_firebase), mobileProductDetailCardViews));
@@ -329,7 +321,7 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
 
     }
 
-    private void initailProductDetailCardViews() {
+    private void initialProductDetailCardViews() {
         mobileProductDetailCardViews.clear();
         fashionProductDetailCardViews.clear();
         laptopProductDetailCardViews.clear();
@@ -361,24 +353,29 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
 
     @Override
     public void ProductAdapterGroupSetOnClicked(int pos) {
-        Log.d(TAG, "ProductAdapterGropSetOnClicked: 1111 " + pos);
     }
 
     @Override
     public void productAdapterSetOnItemClickListener(ProductDetailCardView productDetailCardView, int pos) {
         if (getSupportFragmentManager().findFragmentById(R.id.main_activity3_fragment) instanceof HomeFragment) {
-            Log.d(TAG, "productAdapterSetOnItemClickListener: ----- "+productDetailCardView.getProductId());
-            BottomSheetDialog mBottomSheetDialog = new BottomSheetDialog(productDetailCardView.getProductId());
+            mBottomSheetDialog = new BottomSheetDialog(productDetailCardView);
             mBottomSheetDialog.show(getSupportFragmentManager(), "BottomSheet");
         }
-
+        if (getSupportFragmentManager().findFragmentById(R.id.main_activity3_fragment) instanceof MyCartFragment) {
+            mBottomSheetDialog = new BottomSheetDialog(productDetailCardView);
+            mBottomSheetDialog.show(getSupportFragmentManager(), "BottomSheet");
+        }
+        mBottomSheetDialog.setBottomSheetDialogInt(new BottomSheetDialog.BottomSheetDialogInt() {
+            @Override
+            public void sheetDismiss() {
+                if (getSupportFragmentManager().findFragmentById(R.id.main_activity3_fragment) instanceof MyCartFragment)
+                    myCartFragment.showUserProduct();
+            }
+        });
     }
 
     @Override
     public void productAdapterSetOnItemClickListenerCartFragment(ProductDetailCardView productDetailCardView, int pos) {
-        if (getSupportFragmentManager().findFragmentById(R.id.main_activity3_fragment) instanceof MyCartFragment) {
-
-        }
     }
 
     @Override
@@ -418,4 +415,5 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
                 .addToBackStack(null)
                 .commit();
     }
+
 }

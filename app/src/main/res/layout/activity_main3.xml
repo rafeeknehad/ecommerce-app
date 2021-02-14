@@ -15,16 +15,17 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/drawerlayout_toolbar"
+            android:id="@+id/drawer_layout_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            tools:ignore="UnusedAttribute" />
 
         <androidx.recyclerview.widget.RecyclerView
-            tools:listitem="@layout/product_type_cardview"
+            tools:listitem="@layout/product_type_card_view"
             android:id="@+id/main_activity3_recycler_view_product_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -39,7 +40,7 @@
     </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView
-        android:id="@+id/drawerlayout_nav_view"
+        android:id="@+id/drawer_layout_nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"

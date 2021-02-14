@@ -35,7 +35,6 @@ public class MainActivity3Repostory {
     private Application application;
 
     public MainActivity3Repostory(Application application) {
-        Log.d(TAG, "MainActivity3Repostory: ....................");
         mutableLiveData = new MediatorLiveData<>();
         this.application = application;
         databaseReference = FirebaseDatabase.getInstance().getReference("");
@@ -46,49 +45,50 @@ public class MainActivity3Repostory {
     }
 
     public LiveData<AllCategory> getAllData() {
-        Log.d(TAG, "getAllData: ......................a");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Log.d(TAG, "onDataChange: .....................b");
                 mobileDetailsArrayList.clear();
                 fashionDetailsArrayList.clear();
                 productTypeArrayList.clear();
                 labtopDetailsArrayList.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     String type = dataSnapshot.getKey();
-                    if (type.equals(application.getString(R.string.mobile_firebase))) {
+                    if (type != null && type.equals(application.getString(R.string.mobile_firebase))) {
                         for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                            Log.d(TAG, "onDataChange: 1111 " + dataSnapshot1.getKey());
                             MobileDetails mobileDetails = dataSnapshot1.getValue(MobileDetails.class);
-                            mobileDetails.setKey(dataSnapshot1.getKey());
+                            if (mobileDetails != null) {
+                                mobileDetails.setKey(dataSnapshot1.getKey());
+                            }
                             mobileDetailsArrayList.add(mobileDetails);
                         }
-                    } else if (type.equals(application.getString(R.string.fashion_firebase))) {
+                    } else if (type != null && type.equals(application.getString(R.string.fashion_firebase))) {
                         for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                            Log.d(TAG, "onDataChange: 1111 " + dataSnapshot1.getKey());
                             FashionDetails fashionDetails = dataSnapshot1.getValue(FashionDetails.class);
-                            fashionDetails.setKey(dataSnapshot1.getKey());
+                            if (fashionDetails != null) {
+                                fashionDetails.setKey(dataSnapshot1.getKey());
+                            }
                             fashionDetailsArrayList.add(fashionDetails);
                         }
-                    } else if (type.equals(application.getString(R.string.product_type_firebase))) {
+                    } else if (type != null && type.equals(application.getString(R.string.product_type_firebase))) {
                         for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                            Log.d(TAG, "onDataChange: 1111 " + dataSnapshot1.getKey());
                             ProductType productType = dataSnapshot1.getValue(ProductType.class);
-                            productType.setKey(dataSnapshot1.getKey());
+                            if (productType != null) {
+                                productType.setKey(dataSnapshot1.getKey());
+                            }
                             productTypeArrayList.add(productType);
                         }
-                    } else if (type.equals(application.getString(R.string.labtop_firebase))) {
+                    } else if (type != null && type.equals(application.getString(R.string.labtop_firebase))) {
                         for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                            Log.d(TAG, "onDataChange: 1111 " + dataSnapshot1.getKey());
                             LabtopDetails labtopDetails = dataSnapshot1.getValue(LabtopDetails.class);
-                            labtopDetails.setKey(dataSnapshot1.getKey());
+                            if (labtopDetails != null) {
+                                labtopDetails.setKey(dataSnapshot1.getKey());
+                            }
                             labtopDetailsArrayList.add(labtopDetails);
                         }
                     }
 
                 }
-                Log.d(TAG, "onDataChange: 1111 " + productTypeArrayList.size());
                 AllCategory allCategory = new AllCategory(productTypeArrayList, mobileDetailsArrayList, fashionDetailsArrayList,
                         labtopDetailsArrayList);
                 mutableLiveData.setValue(allCategory);
@@ -97,7 +97,6 @@ public class MainActivity3Repostory {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.d(TAG, "onCancelled: ...... "+error.getMessage());
-                Log.d(TAG, "onCancelled: 1111 " + error.getMessage());
             }
         });
 
