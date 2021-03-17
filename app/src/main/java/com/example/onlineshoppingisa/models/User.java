@@ -1,5 +1,7 @@
 package com.example.onlineshoppingisa.models;
 
+import android.net.Uri;
+
 import com.google.firebase.firestore.Exclude;
 
 public class User {
@@ -11,6 +13,7 @@ public class User {
     private String gender;
     private String birthData;
     private String idKey;
+    private String userImage;
 
     public User() {
     }
@@ -26,6 +29,14 @@ public class User {
         this.job = job;
         this.gender = gender;
         this.birthData = birthData;
+    }
+
+    public String getUserImage() {
+        return userImage;
+    }
+
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
     }
 
     public void setIdKey(String idKey) {

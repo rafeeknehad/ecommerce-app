@@ -27,8 +27,6 @@ import java.util.List;
 
 public class HomeFragment extends Fragment {
 
-    //xml
-    private RecyclerView recyclerView;
     private androidx.appcompat.widget.SearchView searchView;
     private MenuItem menuItem;
 
@@ -37,7 +35,7 @@ public class HomeFragment extends Fragment {
 
     private ArrayList<MobileDetails> mobileDetailsArrayList;
     private ArrayList<FashionDetails> fashionDetailsArrayList;
-    private ArrayList<LabtopDetails> labtopDetailsArrayList;
+    private ArrayList<LabtopDetails> laptopDetailsArrayList;
 
     private List<ProductDetailCardView> allProductDetailCardViews;
     private List<ProductDetailCardView> mobileProductDetailCardViews;
@@ -52,10 +50,10 @@ public class HomeFragment extends Fragment {
     }
 
     public HomeFragment(ArrayList<MobileDetails> mobileDetailsArrayList, ArrayList<FashionDetails> fashionDetailsArrayList,
-                        ArrayList<LabtopDetails> labtopDetailsArrayList) {
+                        ArrayList<LabtopDetails> laptopDetailsArrayList) {
         this.mobileDetailsArrayList = mobileDetailsArrayList;
         this.fashionDetailsArrayList = fashionDetailsArrayList;
-        this.labtopDetailsArrayList = labtopDetailsArrayList;
+        this.laptopDetailsArrayList = laptopDetailsArrayList;
 
         allProductDetailCardViews = new ArrayList<>();
         mobileProductDetailCardViews = new ArrayList<>();
@@ -69,16 +67,17 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment, container, false);
-        recyclerView = view.findViewById(R.id.home_fragment_product);
+        //xml
+        RecyclerView recyclerView = view.findViewById(R.id.home_fragment_product);
         productAdapterGroup = new ProductAdapterGroup(getActivity(), productDetailCardViewGroups);
         recyclerView.setAdapter(productAdapterGroup);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
-        initailProductDetailCardViews(getActivity(),mobileDetailsArrayList,fashionDetailsArrayList,labtopDetailsArrayList);
+        initialProductDetailCardViews(getActivity(),mobileDetailsArrayList,fashionDetailsArrayList, laptopDetailsArrayList);
         return view;
     }
 
-    public void initailProductDetailCardViews(Context context,ArrayList<MobileDetails> mobileDetailsArrayList, ArrayList<FashionDetails> fashionDetailsArrayList, ArrayList<LabtopDetails> labtopDetailsArrayList) {
+    public void initialProductDetailCardViews(Context context, ArrayList<MobileDetails> mobileDetailsArrayList, ArrayList<FashionDetails> fashionDetailsArrayList, ArrayList<LabtopDetails> labtopDetailsArrayList) {
         for (int i = 0; i < 10; i++) {
             MobileDetails mobileDetails = mobileDetailsArrayList.get(i);
             LabtopDetails labtopDetails = labtopDetailsArrayList.get(i);
@@ -108,10 +107,10 @@ public class HomeFragment extends Fragment {
         productDetailCardViewGroups.add(new ProductDetailCardViewGroup(context.getString(R.string.mobile_firebase), mobileProductDetailCardViews));
         productDetailCardViewGroups.add(new ProductDetailCardViewGroup(context.getString(R.string.fashion_firebase), fashionProductDetailCardViews));
         productDetailCardViewGroups.add(new ProductDetailCardViewGroup(context.getString(R.string.labtop_firebase), labtopProductDetailCardViews));
-        setDataForProdructAdapter(productDetailCardViewGroups);
+        setDataForProductAdapter(productDetailCardViewGroups);
     }
 
-    public void setDataForProdructAdapter(List<ProductDetailCardViewGroup> productDetailCardViewGroups) {
+    public void setDataForProductAdapter(List<ProductDetailCardViewGroup> productDetailCardViewGroups) {
         productAdapterGroup.setList(productDetailCardViewGroups);
     }
 }

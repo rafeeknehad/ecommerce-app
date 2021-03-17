@@ -26,13 +26,11 @@ public class ProductAdapterGroup extends RecyclerView.Adapter<ProductAdapterGrou
     private Context context;
     private List<ProductDetailCardViewGroup> productDetailCardViewGroups;
     public ProductAdapter productAdapter;
-    private ProductAdapterGroupInterface productAdapterGroupInterface;
     private List<ProductDetailCardViewGroup> productDetailCardViewGroupsFull;
 
     public ProductAdapterGroup(Context context, List<ProductDetailCardViewGroup> productDetailCardViewGroups) {
         this.context = context;
         this.productDetailCardViewGroups = productDetailCardViewGroups;
-        productAdapterGroupInterface = (ProductAdapterGroupInterface) context;
         productDetailCardViewGroupsFull = new ArrayList<>(productDetailCardViewGroups);
     }
 
@@ -92,14 +90,6 @@ public class ProductAdapterGroup extends RecyclerView.Adapter<ProductAdapterGrou
                 notifyDataSetChanged();
             }
         };
-    }
-
-    public void setProductAdapterGroupInterface(ProductAdapterGroupInterface mListener) {
-        productAdapterGroupInterface = mListener;
-    }
-
-    public interface ProductAdapterGroupInterface {
-        public void ProductAdapterGroupSetOnClicked(int pos);
     }
 
     public static class ProductAdapterGroupViewHolder extends RecyclerView.ViewHolder {

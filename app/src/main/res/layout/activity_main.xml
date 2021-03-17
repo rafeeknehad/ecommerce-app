@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@null"
-            android:text="Shopping App"
+            android:text="@string/shopping_app"
             android:textColor="@color/colorLayerDark"
             android:textSize="25sp" />
     </LinearLayout>
@@ -62,7 +62,7 @@
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
             android:gravity="center"
-            android:hint="Log In"
+            android:hint="@string/log_in"
             android:textColor="@color/colorTextPrimary"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -84,7 +84,7 @@
                 android:drawableStart="@drawable/ic_baseline_email_24"
                 android:drawableLeft="@drawable/ic_baseline_email_24"
                 android:drawablePadding="5dp"
-                android:hint="Email"
+                android:hint="@string/email"
                 android:imeOptions="actionNext"
                 android:inputType="textEmailAddress"
                 android:textColor="@color/colorTextPrimary"
@@ -121,7 +121,7 @@
                 android:drawableStart="@drawable/ic_baseline_lock_24"
                 android:drawableLeft="@drawable/ic_baseline_lock_24"
                 android:drawablePadding="5dp"
-                android:hint="Password"
+                android:hint="@string/password"
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
                 android:textColor="@color/colorTextPrimary"
@@ -143,7 +143,7 @@
 
         <CheckBox
             android:id="@+id/remember_me"
-            android:text="Remember me"
+            android:text="@string/remember_me"
             android:layout_marginLeft="10dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -151,7 +151,8 @@
             app:layout_constraintTop_toBottomOf="@id/view_pass"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/btn_login"/>
+            app:layout_constraintBottom_toTopOf="@id/btn_login"
+            android:layout_marginStart="10dp" />
 
         <Button
             android:id="@+id/btn_login"
@@ -161,10 +162,10 @@
             android:layout_marginTop="30dp"
             android:layout_marginEnd="10dp"
             android:background="@drawable/login_button_background"
-            android:text="Login"
+            android:text="@string/login"
             android:textAllCaps="true"
             android:textColor="@color/colorLayerDark"
-            android:textSize="13dp"
+            android:textSize="13sp"
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/remember_me" />
 
@@ -176,8 +177,8 @@
             android:layout_marginTop="20sp"
             android:layout_marginEnd="10dp"
             android:gravity="center"
-            android:text="Forget Password?"
-            android:textSize="13dp"
+            android:text="@string/forget_password"
+            android:textSize="13sp"
             app:layout_constraintTop_toBottomOf="@id/btn_login" />
 
         <Button
@@ -187,10 +188,10 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:background="@drawable/login_button1_background"
-            android:text="Create Account"
+            android:text="@string/create_account"
             android:textAllCaps="true"
             android:textColor="@color/colorLayerDark"
-            android:textSize="13dp"
+            android:textSize="13sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_forget_pass" />

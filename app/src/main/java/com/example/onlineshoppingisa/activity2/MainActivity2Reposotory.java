@@ -3,21 +3,14 @@ package com.example.onlineshoppingisa.activity2;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.onlineshoppingisa.models.User;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,12 +45,9 @@ public class MainActivity2Reposotory {
 
     public LiveData<Boolean> loginUser(String email, String pass) {
         firebaseAuth.signInWithEmailAndPassword(email, pass)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            loginLiveData.setValue(task.isComplete());
-                        }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        loginLiveData.setValue(task.isComplete());
                     }
                 });
         return loginLiveData;
@@ -67,49 +57,40 @@ public class MainActivity2Reposotory {
 
         private User user;
 
-        public AddUserAuthAsync(User user) {
+        AddUserAuthAsync(User user) {
             this.user = user;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
             firebaseAuth.createUserWithEmailAndPassword(user.getEmail(), user.getPass())
-                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                user.setUserAuthId(firebaseAuth.getUid());
-                                addUsers(user);
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            user.setUserAuthId(firebaseAuth.getUid());
+                            addUsers(user);
 
-                            } else {
-                                Log.d(TAG, "onComplete: addUserAuth Error");
-                            }
+                        } else {
+                            Log.d(TAG, "onComplete: addUserAuth Error");
                         }
                     });
             return null;
         }
     }
 
-    public class GetAllUsersAsync extends AsyncTask<Void, Void, Void> {
+    public class  GetAllUsersAsync extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
             users.get()
-                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                        @Override
-                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                            List<User> data = new ArrayList<>();
-                            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                                User user = documentSnapshot.toObject(User.class);
-                                user.setIdKey(documentSnapshot.getId());
-                                data.add(user);
-                            }
-                            usersLiveData.setValue(data);
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        List<User> data = new ArrayList<>();
+                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            User user = documentSnapshot.toObject(User.class);
+                            user.setIdKey(documentSnapshot.getId());
+                            data.add(user);
                         }
+                        usersLiveData.setValue(data);
                     })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                        }
+                    .addOnFailureListener(e -> {
                     });
             return null;
         }

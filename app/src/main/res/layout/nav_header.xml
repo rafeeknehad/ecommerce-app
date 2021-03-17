@@ -9,16 +9,19 @@
     android:gravity="bottom"
     >
     
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/nav_header_user_image"
         android:src="@mipmap/ic_launcher"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:contentDescription="@string/todo" />
 
     <TextView
+        android:id="@+id/nav_header_user_name"
         android:textColor="@android:color/black"
         android:textSize="16sp"
         android:layout_marginTop="10dp"
-        android:text="Hello Rafeek"
+        android:text="@string/hello_rafeek"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 </LinearLayout>

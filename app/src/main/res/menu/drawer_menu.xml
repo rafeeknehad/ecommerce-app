@@ -7,32 +7,35 @@
         <item
             android:id="@+id/drawer_menu_home"
             android:icon="@drawable/ic_baseline_home_24"
-            android:title="Home" />
+            android:title="@string/home" />
 
         <item
             android:id="@+id/drawer_menu_profile"
             android:icon="@drawable/ic_baseline_account_circle_24"
-            android:title="Profile" />
+            android:title="@string/profile" />
+
+
+        <item
+            android:id="@+id/my_order"
+            android:icon="@drawable/ic_baseline_shopping_cart_24"
+            android:title="@string/my_order" />
 
         <item
             android:id="@+id/my_cart"
             android:icon="@drawable/ic_baseline_shopping_cart_24"
-            android:title="My Cart" />
+            android:title="@string/my_cart" />
 
-        <item android:id="@+id/sign_out"
+        <item
+            android:id="@+id/sign_out"
             android:icon="@drawable/icons8export26"
-            android:title="Sign Out"/>
-
-        <item android:title="My Order"
-            android:icon="@drawable/ic_baseline_shopping_cart_24"
-            android:id="@+id/my_order"/>
+            android:title="@string/sign_out" />
     </group>
 
-    <item android:title="Connect">
+    <item android:title="@string/connect">
         <menu>
             <item
                 android:id="@+id/drawer_menu_connect_us"
-                android:title="Connect Us" />
+                android:title="@string/connect_us" />
         </menu>
 
     </item>

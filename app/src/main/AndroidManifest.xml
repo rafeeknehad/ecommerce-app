@@ -18,24 +18,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity4"></activity>
+        <activity android:name=".UserProfile"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDSA4jcl-brvEoCALbt2kg7PSOjBCoIREg" />
 
         <activity
-            android:name=".MainActivity5"
-            android:parentActivityName=".activity3.MainActivity3"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar.Home" />
-        <activity
             android:name=".activity3.MainActivity3"
             android:theme="@style/Theme.Design.Light.NoActionBar" />
         <activity
             android:name=".activity2.MainActivity2"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-
-        </activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
@@ -50,8 +44,6 @@
             android:screenOrientation="fullSensor"
             android:stateNotNeeded="true"
             android:windowSoftInputMode="stateAlwaysHidden" />
-
-
     </application>
 
 </manifest>

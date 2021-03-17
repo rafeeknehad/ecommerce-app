@@ -3,28 +3,31 @@ package com.example.onlineshoppingisa.activity2;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.example.onlineshoppingisa.MainActivity;
 import com.example.onlineshoppingisa.R;
 import com.example.onlineshoppingisa.dialog.DataPickerFragment;
 import com.example.onlineshoppingisa.models.User;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Objects;
 
 public class MainActivity2 extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
-    private static final String TAG = "MainActivity2";
+    //private static final String TAG = "MainActivity2";
     //ui
     private TextInputLayout emailText;
     private TextInputLayout userNameText;
@@ -33,11 +36,6 @@ public class MainActivity2 extends AppCompatActivity implements DatePickerDialog
     private TextInputLayout jobText;
     private RadioGroup radioGroup;
     private TextView dataOfBirth;
-    private Button loginBtn;
-
-    //variable
-    private MainActivity2Model mainActivity2Model;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,54 +47,59 @@ public class MainActivity2 extends AppCompatActivity implements DatePickerDialog
         passText = findViewById(R.id.main_activity2_pass);
         confirmPassText = findViewById(R.id.main_activity2_confirm_pass);
         dataOfBirth = findViewById(R.id.main_activity2_data_birth);
-        loginBtn = findViewById(R.id.main_activity2_signin_btn);
+        Button loginBtn = findViewById(R.id.main_activity2_sign_up_btn);
         jobText = findViewById(R.id.main_activity2_job);
         radioGroup = findViewById(R.id.main_activity2_radio_grop);
-        mainActivity2Model = ViewModelProviders.of(this).get(MainActivity2Model.class);
 
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Boolean res = confirmInput();
-                if (res == false) {
-                    return;
-                }
-                RadioButton selectedGender = findViewById(radioGroup.getCheckedRadioButtonId());
-                User user = new User(emailText.getEditText().getText().toString().trim(),
-                        userNameText.getEditText().getText().toString().trim(),
-                        passText.getEditText().getText().toString().trim(),
-                        jobText.getEditText().getText().toString().trim(),
-                        selectedGender.getText().toString(),
-                        dataOfBirth.getText().toString());
-                mainActivity2Model.addUserAuth(user);
-                initialField();
-
-                Intent intent = new Intent(MainActivity2.this, MainActivity.class);
-                setResult(RESULT_OK, intent);
-                finish();
+        loginBtn.setOnClickListener(v -> {
+            boolean res = confirmInput();
+            if (!res) {
+                return;
             }
+            RadioButton selectedGender = findViewById(radioGroup.getCheckedRadioButtonId());
+            User user = new User(Objects.requireNonNull(emailText.getEditText()).getText().toString().trim(),
+                    Objects.requireNonNull(userNameText.getEditText()).getText().toString().trim(),
+                    Objects.requireNonNull(passText.getEditText()).getText().toString().trim(),
+                    Objects.requireNonNull(jobText.getEditText()).getText().toString().trim(),
+                    selectedGender.getText().toString(),
+                    dataOfBirth.getText().toString());
+            addNewUserFun(user);
         });
 
-        dataOfBirth.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                DataPickerFragment dataPickerFragment = new DataPickerFragment();
-                dataPickerFragment.show(getSupportFragmentManager(), "data picker");
-                return true;
-            }
+        dataOfBirth.setOnLongClickListener(v -> {
+            DataPickerFragment dataPickerFragment = new DataPickerFragment();
+            dataPickerFragment.show(getSupportFragmentManager(), "data picker");
+            return true;
         });
 
+    }
+
+    private void addNewUserFun(User user) {
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        CollectionReference users = firebaseFirestore.collection("Users");
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth.createUserWithEmailAndPassword(user.getEmail(), user.getPass())
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        user.setUserAuthId(firebaseAuth.getUid());
+                        users.add(user);
+                        Toast.makeText(getApplicationContext(),"User Add",Toast.LENGTH_SHORT).show();
+                        initialField();
+                        Intent intent = new Intent(MainActivity2.this, MainActivity.class);
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    } else {
+                        Toast.makeText(getApplicationContext(),"The User is exist",Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private boolean confirmInput() {
-        if (!validEmail() | !validUsername() | !validPassword() | !validJob() | !validDataOFBirth()) {
-            return false;
-        }
-        return true;
+        return !(!validEmail() | !validUsername() | !validPassword() | !validJob() | !validDataOFBirth());
     }
 
     private Boolean validEmail() {
-        String email = emailText.getEditText().getText().toString().trim();
+        String email = Objects.requireNonNull(emailText.getEditText()).getText().toString().trim();
         if (email.equals("")) {
             emailText.setErrorEnabled(true);
             emailText.setError("Field can't be empty");
@@ -107,7 +110,7 @@ public class MainActivity2 extends AppCompatActivity implements DatePickerDialog
     }
 
     private Boolean validUsername() {
-        String userName = userNameText.getEditText().getText().toString().trim();
+        String userName = Objects.requireNonNull(userNameText.getEditText()).getText().toString().trim();
         if (userName.equals("")) {
             userNameText.setErrorEnabled(true);
             userNameText.setError("Field can't be empty");
@@ -118,8 +121,8 @@ public class MainActivity2 extends AppCompatActivity implements DatePickerDialog
     }
 
     private Boolean validPassword() {
-        String pass = passText.getEditText().getText().toString().trim();
-        String confirmPass = confirmPassText.getEditText().getText().toString().trim();
+        String pass = Objects.requireNonNull(passText.getEditText()).getText().toString().trim();
+        String confirmPass = Objects.requireNonNull(confirmPassText.getEditText()).getText().toString().trim();
         passText.setErrorEnabled(true);
         confirmPassText.setErrorEnabled(true);
         if (pass.equals("")) {
@@ -130,7 +133,7 @@ public class MainActivity2 extends AppCompatActivity implements DatePickerDialog
         }
         if (!pass.equals(confirmPass) && !pass.equals("") && !confirmPass.equals("")) {
             passText.setError("Password don't match");
-            confirmPassText.setError("Password dont't match");
+            confirmPassText.setError("Password don't match");
             return false;
         }
         if (pass.length() < 6) {
@@ -144,7 +147,7 @@ public class MainActivity2 extends AppCompatActivity implements DatePickerDialog
     }
 
     private Boolean validJob() {
-        String job = jobText.getEditText().getText().toString().trim();
+        String job = Objects.requireNonNull(jobText.getEditText()).getText().toString().trim();
         if (job.equals("")) {
             jobText.setErrorEnabled(true);
             jobText.setError("Field can't be empty");
@@ -178,11 +181,11 @@ public class MainActivity2 extends AppCompatActivity implements DatePickerDialog
     }
 
     public void initialField() {
-        emailText.getEditText().setText("");
-        userNameText.getEditText().setText("");
-        passText.getEditText().setText("");
-        confirmPassText.getEditText().setText("");
-        jobText.getEditText().setText("");
+        Objects.requireNonNull(emailText.getEditText()).setText("");
+        Objects.requireNonNull(userNameText.getEditText()).setText("");
+        Objects.requireNonNull(passText.getEditText()).setText("");
+        Objects.requireNonNull(confirmPassText.getEditText()).setText("");
+        Objects.requireNonNull(jobText.getEditText()).setText("");
         dataOfBirth.setText(getString(R.string.data_of_birth));
         radioGroup.check(R.id.main_activity2_male);
     }

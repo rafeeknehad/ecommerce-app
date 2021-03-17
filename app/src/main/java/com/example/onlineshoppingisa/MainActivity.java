@@ -6,17 +6,25 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.example.onlineshoppingisa.activity2.MainActivity2;
-import com.example.onlineshoppingisa.activity2.MainActivity2Model;
 import com.example.onlineshoppingisa.activity3.MainActivity3;
+import com.example.onlineshoppingisa.models.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Objects;
 
@@ -26,15 +34,17 @@ public class MainActivity extends AppCompatActivity {
     //final
     private static final String TAG = "MainActivity";
     private static final int REQUEST_CODE = 1;
-
+    public static User currentUser = null;
     //ui
     private TextInputLayout emailTxt;
     private TextInputLayout passTxt;
 
     //variable
-    private MainActivity2Model mainActivity2Model;
+    //private MainActivity2Model mainActivity2Model;
     //private List<User> allDataOfUsers;
     private SharedPreferences sharedPreferences;
+    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
         Button signBtn = findViewById(R.id.btn_create_account);
         TextView forgetPass = findViewById(R.id.txt_forget_pass);
         CheckBox rememberMe = findViewById(R.id.remember_me);
-        mainActivity2Model = ViewModelProviders.of(this).get(MainActivity2Model.class);
         sharedPreferences = getSharedPreferences("rememberMe", MODE_PRIVATE);
 
 
@@ -54,37 +63,38 @@ public class MainActivity extends AppCompatActivity {
         if (rememberMeBoolean) {
             String userName = sharedPreferences.getString("userName", null);
             String password = sharedPreferences.getString("password", null);
-            mainActivity2Model.loginUser(userName, password).observe(MainActivity.this, aBoolean -> {
-                Intent intent = new Intent(MainActivity.this, MainActivity3.class);
-                startActivityForResult(intent, REQUEST_CODE);
-            });
+            if (userName != null && password != null)
+                firebaseAuth.signInWithEmailAndPassword(userName, password)
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                getUserDataFun();
+                                /*Intent intent = new Intent(MainActivity.this, MainActivity3.class);
+                                startActivityForResult(intent, REQUEST_CODE);*/
+                            }
+                        });
         } else {
             Toast.makeText(this, "Please Login IN", Toast.LENGTH_SHORT).show();
         }
-
-        mainActivity2Model.getAllUser().observe(this, users -> {
-            Log.d(TAG, "onChanged: **** " + users.size());
-            //allDataOfUsers = users;
-        });
-
         signBtn.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), MainActivity2.class);
             startActivityForResult(intent, REQUEST_CODE);
         });
-
         loginBtn.setOnClickListener(v -> {
-            String email = Objects.requireNonNull(emailTxt.getEditText()).getText().toString().trim();
-            String pass = Objects.requireNonNull(passTxt.getEditText()).getText().toString().trim();
-            mainActivity2Model.loginUser(email, pass).observe(MainActivity.this, aBoolean -> {
-                if (aBoolean) {
-                    Intent intent = new Intent(MainActivity.this, MainActivity3.class);
-                    startActivityForResult(intent, REQUEST_CODE);
-                } else {
-                    Toast.makeText(MainActivity.this, "Please Sign Up", Toast.LENGTH_SHORT).show();
+            EditText editText1 = emailTxt.getEditText();
+            EditText editText2 = passTxt.getEditText();
+            if (editText1 != null && editText2 != null) {
+                String email = editText1.getText().toString().trim();
+                String pass = editText2.getText().toString().trim();
+                if (!email.equals("") && !pass.equals("")) {
+                    firebaseAuth.signInWithEmailAndPassword(email, pass)
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    getUserDataFun();
+                                }
+                            });
                 }
-            });
+            }
         });
-
         forgetPass.setOnClickListener(v -> {
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
             firebaseAuth.sendPasswordResetEmail(Objects.requireNonNull(emailTxt.getEditText()).getText().toString().trim())
@@ -94,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
         });
-
         rememberMe.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -110,5 +119,27 @@ public class MainActivity extends AppCompatActivity {
                 editor.apply();
             }
         });
+    }
+
+    private void getUserDataFun() {
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        CollectionReference reference = firebaseFirestore.collection("Users");
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            Query query = reference.whereEqualTo("userAuthId", FirebaseAuth.getInstance().getCurrentUser().getUid());
+            query.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult() != null) {
+                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                        currentUser = documentSnapshot.toObject(User.class);
+                        currentUser.setIdKey(documentSnapshot.getId());
+                        Log.d(TAG, "onComplete: 0000 " + currentUser.getIdKey());
+                        Intent intent = new Intent(MainActivity.this, MainActivity3.class);
+                        startActivityForResult(intent, REQUEST_CODE);
+                    }
+                } else {
+                    Log.d(TAG, "onComplete: 0000 error");
+                }
+            });
+        }
+
     }
 }
