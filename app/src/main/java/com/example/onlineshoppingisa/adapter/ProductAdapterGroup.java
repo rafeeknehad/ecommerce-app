@@ -1,6 +1,7 @@
 package com.example.onlineshoppingisa.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,13 +25,13 @@ public class ProductAdapterGroup extends RecyclerView.Adapter<ProductAdapterGrou
     private static final String TAG = "ProductAdapterGroup";
 
     private Context context;
-    private List<ProductDetailCardViewGroup> productDetailCardViewGroups;
-    public ProductAdapter productAdapter;
+    private List<ProductDetailCardViewGroup> productDetailCardViewGroupsAdapter;
     private List<ProductDetailCardViewGroup> productDetailCardViewGroupsFull;
+    public ProductAdapter productAdapter;
 
     public ProductAdapterGroup(Context context, List<ProductDetailCardViewGroup> productDetailCardViewGroups) {
         this.context = context;
-        this.productDetailCardViewGroups = productDetailCardViewGroups;
+        this.productDetailCardViewGroupsAdapter = productDetailCardViewGroups;
         productDetailCardViewGroupsFull = new ArrayList<>(productDetailCardViewGroups);
     }
 
@@ -43,7 +44,7 @@ public class ProductAdapterGroup extends RecyclerView.Adapter<ProductAdapterGrou
 
     @Override
     public void onBindViewHolder(@NonNull ProductAdapterGroupViewHolder holder, int position) {
-        ProductDetailCardViewGroup item = productDetailCardViewGroups.get(position);
+        ProductDetailCardViewGroup item = productDetailCardViewGroupsAdapter.get(position);
         holder.textView.setText(item.getProductType());
         productAdapter = new ProductAdapter((ArrayList<ProductDetailCardView>) item.getProductTypeList(), context);
         holder.recyclerView.setNestedScrollingEnabled(true);
@@ -53,7 +54,7 @@ public class ProductAdapterGroup extends RecyclerView.Adapter<ProductAdapterGrou
 
     @Override
     public int getItemCount() {
-        return productDetailCardViewGroups.size();
+        return productDetailCardViewGroupsAdapter.size();
     }
 
     @Override
@@ -85,8 +86,8 @@ public class ProductAdapterGroup extends RecyclerView.Adapter<ProductAdapterGrou
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                productDetailCardViewGroups.clear();
-                productDetailCardViewGroups.addAll((List)results.values);
+                productDetailCardViewGroupsAdapter.clear();
+                productDetailCardViewGroupsAdapter.addAll((List) results.values);
                 notifyDataSetChanged();
             }
         };
@@ -106,8 +107,8 @@ public class ProductAdapterGroup extends RecyclerView.Adapter<ProductAdapterGrou
 
     public void setList(List<ProductDetailCardViewGroup> list)
     {
-        this.productDetailCardViewGroups = list;
-        this.productDetailCardViewGroupsFull = list;
+        this.productDetailCardViewGroupsAdapter = list;
+        this.productDetailCardViewGroupsFull = new ArrayList<>(list);
         notifyDataSetChanged();;
     }
 }

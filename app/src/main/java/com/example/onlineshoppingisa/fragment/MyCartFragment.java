@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.onlineshoppingisa.MainActivity;
 import com.example.onlineshoppingisa.R;
 import com.example.onlineshoppingisa.adapter.ProductAdapterGroup;
 import com.example.onlineshoppingisa.models.FashionDetails;
@@ -65,7 +66,6 @@ public class MyCartFragment extends Fragment {
     private static final String TAG = "MyCartFragment";
     private static final int PLACE_PICKER_REQUEST = 1;
 
-
     private List<MobileDetails> mobileDetailsArrayList;
     private List<FashionDetails> fashionDetailsArrayList;
     private List<LabtopDetails> laptopDetailsArrayList;
@@ -76,7 +76,7 @@ public class MyCartFragment extends Fragment {
     private List<ProductDetailCardViewGroup> productUserDetailCardViewGroups;
     private List<ProductRoom> mProductRoomList;
 
-    private ProductAdapterGroup productAdapterGroup;
+    public static ProductAdapterGroup productAdapterGroup;
     private ProductDataBaseModel mProductDataBaseModel;
 
 
@@ -85,6 +85,7 @@ public class MyCartFragment extends Fragment {
     private String mOrderId;
     private String mUserProduct;
     private long totalPrice;
+    private long totalPrice1;
     private TextView mTotalPrice;
 
     public MyCartFragment() {
@@ -98,9 +99,7 @@ public class MyCartFragment extends Fragment {
         fashionUserProductDetailCardViews = new ArrayList<>();
         productUserDetailCardViewGroups = new ArrayList<>();
 
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            mUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        }
+        mUserId = MainActivity.currentUser.getIdKey();
     }
 
     public MyCartFragment(ArrayList<MobileDetails> mobileDetailsArrayList, ArrayList<FashionDetails> fashionDetailsArrayList,
@@ -134,9 +133,7 @@ public class MyCartFragment extends Fragment {
         recyclerView.setAdapter(productAdapterGroup);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
         showUserProduct();
-
         buttonConfirm.setOnClickListener(v -> setOrder());
-
         buttonLocation.setOnClickListener(v -> setLocation());
         return view;
     }
@@ -265,13 +262,12 @@ public class MyCartFragment extends Fragment {
     }
 
     private void setOrder() {
-        Calendar c = Calendar.getInstance();
-
+        /*Calendar c = Calendar.getInstance();
         @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");// HH:mm:ss");
         c.add(Calendar.DATE, 3);  // number of days to add
         String deliverData = df.format(c.getTime());
-
-        Orders order = new Orders(deliverData, mUserId, mLocation);
+        */
+        Orders order = new Orders(mUserId, mLocation);
         FirebaseFirestore.getInstance()
                 .collection("Orders")
                 .document(mUserId)
@@ -349,5 +345,65 @@ public class MyCartFragment extends Fragment {
         sendEmail();
         mProductDataBaseModel.deleteAllOrderFromUser(mUserId);
         showUserProduct();
+    }
+
+    public void setDataForProductAdapter(String type) {
+        totalPrice1 = 0;
+        DecimalFormat format = new DecimalFormat("###,###,###.00");
+        productUserDetailCardViewGroups = new ArrayList<>();
+        mobileUserProductDetailCardViews = new ArrayList<>();
+        fashionUserProductDetailCardViews = new ArrayList<>();
+        laptopUserProductDetailCardViews = new ArrayList<>();
+        mProductDataBaseModel.getLiveDataOfUser(mUserId).observe(Objects.requireNonNull(getActivity()), productRooms -> {
+            mProductRoomList = productRooms;
+            for (ProductRoom item : productRooms) {
+                Log.d(TAG, "setDataForProductAdapter: 000011 " + type + " " + getString(R.string.mobile_firebase));
+                if (item.getProductId().contains("mobile") && (type.equals(getString(R.string.mobile_firebase)) || type.equals("All"))) {
+                    for (MobileDetails mobile : mobileDetailsArrayList) {
+                        if (item.getProductId().equals(mobile.getKey())) {
+                            totalPrice1 += parseInt(mobile.getPrice()) * item.getQuantity();
+                            mobileUserProductDetailCardViews.add(new ProductDetailCardView(item.getProductId(),
+                                    getActivity().getResources().getString(R.string.mobile_firebase),
+                                    mobile.getName(), mobile.getPrice(), mobile.getRating(),
+                                    mobile.getImage()));
+                            break;
+                        }
+                    }
+                } else if (item.getProductId().contains("labtop")) {
+                    for (LabtopDetails laptop : laptopDetailsArrayList) {
+                        if (item.getProductId().equals(laptop.getKey()) && (type.equals(getString(R.string.labtop_firebase)) || type.equals("All"))) {
+                            totalPrice1 += parseInt(laptop.getPrice()) * item.getQuantity();
+                            laptopUserProductDetailCardViews.add(new ProductDetailCardView(item.getProductId(),
+                                    getActivity().getResources().getString(R.string.labtop_firebase),
+                                    laptop.getName(), laptop.getPrice(), laptop.getRating(),
+                                    laptop.getImage()));
+                            break;
+                        }
+                    }
+                } else {
+                    for (FashionDetails fashion : fashionDetailsArrayList) {
+                        if (item.getProductId().equals(fashion.getKey()) && (type.equals(getString(R.string.fashion_firebase)) || type.equals("All"))) {
+                            totalPrice1 += parseInt(fashion.getPrice()) * item.getQuantity();
+                            fashionUserProductDetailCardViews.add(new ProductDetailCardView(item.getProductId(),
+                                    getActivity().getResources().getString(R.string.fashion_firebase),
+                                    fashion.getName(), fashion.getPrice(), fashion.getRating(),
+                                    fashion.getImage()));
+                            break;
+                        }
+                    }
+                }
+            }
+            mTotalPrice.setText("Total Price: " + format.format(totalPrice1) + " $");
+            all.addAll(mobileUserProductDetailCardViews);
+            all.addAll(laptopUserProductDetailCardViews);
+            all.addAll(fashionUserProductDetailCardViews);
+            if (mobileUserProductDetailCardViews.size() != 0)
+                productUserDetailCardViewGroups.add(new ProductDetailCardViewGroup(getActivity().getString(R.string.mobile_firebase), mobileUserProductDetailCardViews));
+            if (fashionUserProductDetailCardViews.size() != 0)
+                productUserDetailCardViewGroups.add(new ProductDetailCardViewGroup(getActivity().getString(R.string.fashion_firebase), fashionUserProductDetailCardViews));
+            if (laptopUserProductDetailCardViews.size() != 0)
+                productUserDetailCardViewGroups.add(new ProductDetailCardViewGroup(getActivity().getString(R.string.labtop_firebase), laptopUserProductDetailCardViews));
+            productAdapterGroup.setList(productUserDetailCardViewGroups);
+        });
     }
 }

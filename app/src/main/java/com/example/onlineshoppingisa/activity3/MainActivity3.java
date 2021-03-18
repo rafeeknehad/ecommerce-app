@@ -94,8 +94,6 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main3);
         sharedPreferences = getSharedPreferences("rememberMe", MODE_PRIVATE);
-
-
         selectCategory = "All";
 
         //initial variable
@@ -137,16 +135,12 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
             fashionDetailsArrayList = new ArrayList<>(allCategory.getFashionDetailsList());
             laptopDetailsArrayList = new ArrayList<>(allCategory.getLabtopDetails());
             productTypeArrayList = new ArrayList<>(allCategory.getProductTypeList());
-            homeFragment = new HomeFragment(mobileDetailsArrayList, fashionDetailsArrayList, laptopDetailsArrayList);
             if (savedInstanceState == null) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_activity3_fragment, homeFragment)
-                        .commit();
-                navigationView.setCheckedItem(R.id.drawer_menu_home);
+                openHomeFragmentFun();
             }
             myCartFragment = new MyCartFragment(mobileDetailsArrayList, fashionDetailsArrayList, laptopDetailsArrayList);
             setDataForTypeAdapter();
         });
-
     }
 
     //set the data of the user in the header of the drawer layout
@@ -314,8 +308,8 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
     //open the home fragment
     private void openHomeFragmentFun() {
         navigationView.setCheckedItem(R.id.drawer_menu_home);
-        HomeFragment homeFragment1 = new HomeFragment(mobileDetailsArrayList, fashionDetailsArrayList, laptopDetailsArrayList);
-        getSupportFragmentManager().beginTransaction().replace(R.id.main_activity3_fragment, homeFragment1)
+        homeFragment = new HomeFragment(mobileDetailsArrayList, fashionDetailsArrayList, laptopDetailsArrayList);
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_activity3_fragment, homeFragment)
                 .addToBackStack(null)
                 .commit();
     }
@@ -377,8 +371,13 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
 
                     @Override
                     public boolean onQueryTextChange(String newText) {
-                        Log.d(TAG, "onQueryTextChange: 0000 "+newText);
-                        HomeFragment.productAdapterGroup.getFilter().filter(newText);
+                        Log.d(TAG, "onQueryTextChange: 0000 " + newText);
+                        if (getSupportFragmentManager().findFragmentById(R.id.main_activity3_fragment) instanceof HomeFragment) {
+                            HomeFragment.productAdapterGroup.getFilter().filter(newText);
+                        } else if (getSupportFragmentManager().findFragmentById(R.id.main_activity3_fragment) instanceof MyCartFragment) {
+                            Log.d(TAG, "onQueryTextChange: 0000 e7na hena");
+                            MyCartFragment.productAdapterGroup.getFilter().filter(newText);
+                        }
                         return true;
                     }
                 });
@@ -446,7 +445,11 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
         } else if (selectCategory.equals(getString(R.string.labtop_firebase))) {
             productDetailCardViewGroups.add(new ProductDetailCardViewGroup(getString(R.string.labtop_firebase), laptopProductDetailCardViews));
         }
-        homeFragment.setDataForProductAdapter(productDetailCardViewGroups);
+        if (getSupportFragmentManager().findFragmentById(R.id.main_activity3_fragment) instanceof HomeFragment) {
+            homeFragment.setDataForProductAdapter(productDetailCardViewGroups);
+        } else if (getSupportFragmentManager().findFragmentById(R.id.main_activity3_fragment) instanceof MyCartFragment) {
+            myCartFragment.setDataForProductAdapter(selectCategory);
+        }
     }
 
     @Override
