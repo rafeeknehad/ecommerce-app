@@ -46,4 +46,8 @@
     <string name="my_order">My Order</string>
     <string name="connect">Connect</string>
     <string name="connect_us">Connect Us</string>
+    <string name="product_name">Product Name</string>
+    <string name="qunatity_value">Qunatity value</string>
+    <string name="product_price">product price</string>
+    <string name="flow_chart">flow chart</string>
 </resources>

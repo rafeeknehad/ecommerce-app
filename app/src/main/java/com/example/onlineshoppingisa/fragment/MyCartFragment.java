@@ -24,6 +24,7 @@ import com.example.onlineshoppingisa.MainActivity;
 import com.example.onlineshoppingisa.R;
 import com.example.onlineshoppingisa.adapter.ProductAdapterGroup;
 import com.example.onlineshoppingisa.models.FashionDetails;
+import com.example.onlineshoppingisa.models.FlowChart;
 import com.example.onlineshoppingisa.models.LabtopDetails;
 import com.example.onlineshoppingisa.models.MobileDetails;
 import com.example.onlineshoppingisa.models.OrderDetails;
@@ -36,13 +37,15 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -275,10 +278,33 @@ public class MyCartFragment extends Fragment {
                 .add(order)
                 .addOnSuccessListener(documentReference -> {
                     mOrderId = documentReference.getId();
+                    addToFlowChartRep();
                     setOrderDetails();
                 })
                 .addOnFailureListener(e -> {
 
+                });
+    }
+
+    private void addToFlowChartRep() {
+        Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        Log.d(TAG, "addToFlowChartRep: 0000 " + month);
+        FirebaseFirestore.getInstance()
+                .collection("FlowChart")
+                .document(MainActivity.currentUser.getUserAuthId())
+                .collection("Years")
+                .document(String.valueOf(year))
+                .collection("Months")
+                .document(String.valueOf(month + 1))
+                .collection("Orders")
+                .add(new FlowChart(mOrderId))
+                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        Log.d(TAG, "onComplete: 00000 success");
+                    }
                 });
     }
 

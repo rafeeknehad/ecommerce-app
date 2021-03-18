@@ -11,22 +11,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.onlineshoppingisa.R;
-import com.example.onlineshoppingisa.models.ConfirmOrder;
-import com.example.onlineshoppingisa.roomdatabase.ProductRoom;
+import com.example.onlineshoppingisa.util.OrderDetailsOfOrderFragment;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class UserOrderAdapter extends RecyclerView.Adapter<UserOrderAdapter.UserOrderViewHolder> {
 
     private Context mContext;
-    private List<ProductRoom> mProductRoomList;
+    private List<OrderDetailsOfOrderFragment> orderDetailsOfOrderFragments;
 
-    public UserOrderAdapter(Context mContext, List<ProductRoom> mProductRoomList) {
+    public UserOrderAdapter(Context mContext, List<OrderDetailsOfOrderFragment> orderDetailsOfOrderFragments) {
         this.mContext = mContext;
-        this.mProductRoomList = mProductRoomList;
+        this.orderDetailsOfOrderFragments = orderDetailsOfOrderFragments;
     }
 
     @NonNull
@@ -38,32 +36,35 @@ public class UserOrderAdapter extends RecyclerView.Adapter<UserOrderAdapter.User
 
     @Override
     public void onBindViewHolder(@NonNull UserOrderViewHolder holder, int position) {
-        ProductRoom item = mProductRoomList.get(position);
-        /*Picasso.with(mContext).load(item.getConfirmOrder().getProductImage())
+
+        DecimalFormat format = new DecimalFormat("###,###,###.00");
+        OrderDetailsOfOrderFragment item = orderDetailsOfOrderFragments.get(position);
+        Picasso.with(mContext).load(item.getProductImage())
                 .into(holder.mImageView);
 
-        holder.mProductNameTxt.setText(item.getConfirmOrder().getProductName());
-        holder.mProductQuantityTxt.setText(item.getConfirmOrder().getGetProductQuantity());
-        holder.mProductPriceTxt.setText(item.getConfirmOrder().getProductPrice());*/
+        holder.mProductNameTxt.setText(item.getProductName());
+        holder.mProductQuantityTxt.setText(item.getProductQuantity());
+        long totalPrice = Integer.parseInt(item.getProductQuantity()) * Integer.parseInt(item.getProductTotalPrice());
+        holder.mProductPriceTxt.setText(String.format("%s%s", format.format(totalPrice), '$'));
     }
 
     @Override
     public int getItemCount() {
-        return mProductRoomList.size();
+        return orderDetailsOfOrderFragments.size();
     }
 
-    public class UserOrderViewHolder extends RecyclerView.ViewHolder
-    {
+    public static class UserOrderViewHolder extends RecyclerView.ViewHolder {
         private ImageView mImageView;
         private TextView mProductNameTxt;
         private TextView mProductQuantityTxt;
         private TextView mProductPriceTxt;
+
         public UserOrderViewHolder(@NonNull View itemView) {
             super(itemView);
-            mImageView = itemView.findViewById(R.id.order_cardview_imageview);
-            mProductNameTxt = itemView.findViewById(R.id.order_cardview_product_name);
-            mProductQuantityTxt = itemView.findViewById(R.id.order_cardview_product_qunatity);
-            mProductPriceTxt = itemView.findViewById(R.id.order_cardview_price);
+            mImageView = itemView.findViewById(R.id.order_card_view_image_view);
+            mProductNameTxt = itemView.findViewById(R.id.order_card_view_product_name);
+            mProductQuantityTxt = itemView.findViewById(R.id.order_card_view_product_quantity);
+            mProductPriceTxt = itemView.findViewById(R.id.order_card_view_price);
         }
     }
 }

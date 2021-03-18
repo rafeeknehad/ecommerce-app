@@ -32,6 +32,7 @@ import com.example.onlineshoppingisa.MainActivity;
 import com.example.onlineshoppingisa.R;
 import com.example.onlineshoppingisa.adapter.ProductAdapter;
 import com.example.onlineshoppingisa.adapter.ProductTypeAdapter;
+import com.example.onlineshoppingisa.fragment.ChartRepresentingFragment;
 import com.example.onlineshoppingisa.fragment.HomeFragment;
 import com.example.onlineshoppingisa.fragment.MyCartFragment;
 import com.example.onlineshoppingisa.fragment.MyOrderFragment;
@@ -86,6 +87,7 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
     private List<ProductDetailCardViewGroup> productDetailCardViewGroups;
     private HomeFragment homeFragment;
     private MyCartFragment myCartFragment;
+    private MyOrderFragment myOrderFragment;
     private BottomSheetDialog mBottomSheetDialog;
 
     private String selectCategory;
@@ -139,6 +141,7 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
                 openHomeFragmentFun();
             }
             myCartFragment = new MyCartFragment(mobileDetailsArrayList, fashionDetailsArrayList, laptopDetailsArrayList);
+            myOrderFragment = new MyOrderFragment(mobileDetailsArrayList, fashionDetailsArrayList, laptopDetailsArrayList);
             setDataForTypeAdapter();
         });
     }
@@ -238,7 +241,6 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
 
     //open the user order fragment
     private void showUserOrder() {
-        MyOrderFragment myOrderFragment = new MyOrderFragment(MainActivity3.this);
         navigationView.setCheckedItem(R.id.my_order);
         getSupportFragmentManager().beginTransaction().replace(R.id.main_activity3_fragment, myOrderFragment)
                 .addToBackStack(null)
@@ -318,6 +320,14 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
     private void openMyCartFragmentFun() {
         navigationView.setCheckedItem(R.id.my_cart);
         getSupportFragmentManager().beginTransaction().replace(R.id.main_activity3_fragment, myCartFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void openChartRepresentationFun() {
+        ChartRepresentingFragment chartRepresentingFragment = new ChartRepresentingFragment();
+        navigationView.setCheckedItem(R.id.my_chart);
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_activity3_fragment, chartRepresentingFragment)
                 .addToBackStack(null)
                 .commit();
     }
@@ -489,6 +499,10 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
 
             case R.id.drawer_menu_profile:
                 openUserProfileFun();
+                break;
+
+            case R.id.my_chart:
+                openChartRepresentationFun();
                 break;
 
         }
