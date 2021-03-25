@@ -294,16 +294,12 @@ public class MyCartFragment extends Fragment {
         FirebaseFirestore.getInstance()
                 .collection("FlowChart")
                 .document(MainActivity.currentUser.getUserAuthId())
-                .collection("Years")
-                .document(String.valueOf(year))
-                .collection("Months")
-                .document(String.valueOf(month + 1))
                 .collection("Orders")
                 .add(new FlowChart(mOrderId))
                 .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentReference> task) {
-                        Log.d(TAG, "onComplete: 00000 success");
+                        Log.d(TAG, "onComplete: ///// "+task.isSuccessful());
                     }
                 });
     }
