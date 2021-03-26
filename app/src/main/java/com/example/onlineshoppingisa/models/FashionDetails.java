@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.google.firebase.firestore.Exclude;
 
 public class FashionDetails implements Parcelable {
-    private String categouryId;
+    private String categoryId;
     private String key;
     private String name;
     private String desc1;
@@ -19,7 +19,7 @@ public class FashionDetails implements Parcelable {
     }
 
     protected FashionDetails(Parcel in) {
-        categouryId = in.readString();
+        categoryId = in.readString();
         key = in.readString();
         name = in.readString();
         desc1 = in.readString();
@@ -74,8 +74,8 @@ public class FashionDetails implements Parcelable {
         return rating;
     }
 
-    public String getCategouryId() {
-        return categouryId;
+    public String getCategoryId() {
+        return categoryId;
     }
 
     @Override
@@ -85,7 +85,7 @@ public class FashionDetails implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(categouryId);
+        dest.writeString(categoryId);
         dest.writeString(key);
         dest.writeString(name);
         dest.writeString(desc1);

@@ -21,7 +21,7 @@ import java.util.List;
 
 public class ProductAdapterGroup extends RecyclerView.Adapter<ProductAdapterGroup.ProductAdapterGroupViewHolder> implements Filterable {
 
-    private static final String TAG = "ProductAdapterGroup";
+    //private static final String TAG = "ProductAdapterGroup";
 
     private Context context;
     private List<ProductDetailCardViewGroup> productDetailCardViewGroupsAdapter;
@@ -86,7 +86,7 @@ public class ProductAdapterGroup extends RecyclerView.Adapter<ProductAdapterGrou
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 productDetailCardViewGroupsAdapter.clear();
-                productDetailCardViewGroupsAdapter.addAll((List) results.values);
+                productDetailCardViewGroupsAdapter.addAll((List)results.values);
                 notifyDataSetChanged();
             }
         };
@@ -108,6 +108,6 @@ public class ProductAdapterGroup extends RecyclerView.Adapter<ProductAdapterGrou
     {
         this.productDetailCardViewGroupsAdapter = list;
         this.productDetailCardViewGroupsFull = new ArrayList<>(list);
-        notifyDataSetChanged();;
+        notifyDataSetChanged();
     }
 }

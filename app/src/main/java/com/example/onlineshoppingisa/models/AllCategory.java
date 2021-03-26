@@ -6,13 +6,13 @@ public class AllCategory {
     private List<MobileDetails> mobileDetailsList;
     private List<ProductType> productTypeList;
     private List<FashionDetails> fashionDetailsList;
-    private List<LabtopDetails> labtopDetails;
+    private List<LaptopDetails> laptopDetails;
 
-    public AllCategory(List<ProductType> productTypeList, List<MobileDetails> mobileDetailsList, List<FashionDetails> fashionDetailsList, List<LabtopDetails> labtopDetails) {
+    public AllCategory(List<ProductType> productTypeList, List<MobileDetails> mobileDetailsList, List<FashionDetails> fashionDetailsList, List<LaptopDetails> laptopDetails) {
         this.mobileDetailsList = mobileDetailsList;
         this.productTypeList = productTypeList;
         this.fashionDetailsList = fashionDetailsList;
-        this.labtopDetails = labtopDetails;
+        this.laptopDetails = laptopDetails;
     }
 
     public List<MobileDetails> getMobileDetailsList() {
@@ -27,7 +27,7 @@ public class AllCategory {
         return fashionDetailsList;
     }
 
-    public List<LabtopDetails> getLabtopDetails() {
-        return labtopDetails;
+    public List<LaptopDetails> getLaptopDetails() {
+        return laptopDetails;
     }
 }

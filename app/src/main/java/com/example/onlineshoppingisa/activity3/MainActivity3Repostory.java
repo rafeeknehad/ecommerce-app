@@ -11,7 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.onlineshoppingisa.R;
 import com.example.onlineshoppingisa.models.AllCategory;
 import com.example.onlineshoppingisa.models.FashionDetails;
-import com.example.onlineshoppingisa.models.LabtopDetails;
+import com.example.onlineshoppingisa.models.LaptopDetails;
 import com.example.onlineshoppingisa.models.MobileDetails;
 import com.example.onlineshoppingisa.models.ProductType;
 import com.google.firebase.database.DataSnapshot;
@@ -31,7 +31,7 @@ public class MainActivity3Repostory {
     private ArrayList<MobileDetails> mobileDetailsArrayList;
     private ArrayList<FashionDetails> fashionDetailsArrayList;
     private ArrayList<ProductType> productTypeArrayList;
-    private ArrayList<LabtopDetails> labtopDetailsArrayList;
+    private ArrayList<LaptopDetails> laptopDetailsArrayList;
     private Application application;
 
     public MainActivity3Repostory(Application application) {
@@ -41,7 +41,7 @@ public class MainActivity3Repostory {
         mobileDetailsArrayList = new ArrayList<>();
         fashionDetailsArrayList = new ArrayList<>();
         productTypeArrayList = new ArrayList<>();
-        labtopDetailsArrayList = new ArrayList<>();
+        laptopDetailsArrayList = new ArrayList<>();
     }
 
     public LiveData<AllCategory> getAllData() {
@@ -51,7 +51,7 @@ public class MainActivity3Repostory {
                 mobileDetailsArrayList.clear();
                 fashionDetailsArrayList.clear();
                 productTypeArrayList.clear();
-                labtopDetailsArrayList.clear();
+                laptopDetailsArrayList.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     String type = dataSnapshot.getKey();
                     if (type != null && type.equals(application.getString(R.string.mobile_firebase))) {
@@ -80,17 +80,17 @@ public class MainActivity3Repostory {
                         }
                     } else if (type != null && type.equals(application.getString(R.string.labtop_firebase))) {
                         for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                            LabtopDetails labtopDetails = dataSnapshot1.getValue(LabtopDetails.class);
-                            if (labtopDetails != null) {
-                                labtopDetails.setKey(dataSnapshot1.getKey());
+                            LaptopDetails laptopDetails = dataSnapshot1.getValue(LaptopDetails.class);
+                            if (laptopDetails != null) {
+                                laptopDetails.setKey(dataSnapshot1.getKey());
                             }
-                            labtopDetailsArrayList.add(labtopDetails);
+                            laptopDetailsArrayList.add(laptopDetails);
                         }
                     }
 
                 }
                 AllCategory allCategory = new AllCategory(productTypeArrayList, mobileDetailsArrayList, fashionDetailsArrayList,
-                        labtopDetailsArrayList);
+                        laptopDetailsArrayList);
                 mutableLiveData.setValue(allCategory);
             }
 

@@ -6,8 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.onlineshoppingisa.ChartRepresentingFragmentModel;
 import com.example.onlineshoppingisa.R;
@@ -40,9 +42,14 @@ public class ChartRepresentingFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+
+        if (getActivity() != null) {
+            RecyclerView type = getActivity().findViewById(R.id.main_activity3_recycler_view_product_type);
+            type.setVisibility(View.GONE);
+        }
         ChartRepresentingFragmentModel model = ViewModelProviders.of(this).get(ChartRepresentingFragmentModel.class);
         model.getAllChartOfUserOrder().observe(this, flowCharts -> {
             Log.d(TAG, "onChanged: ///// " + flowCharts.size());
@@ -78,7 +85,7 @@ public class ChartRepresentingFragment extends Fragment {
                 entries.add(new BarEntry(Float.parseFloat(key), Integer.parseInt(counter)));
             }
         }
-        BarDataSet barDataSet = new BarDataSet(entries, "Visitors");
+        BarDataSet barDataSet = new BarDataSet(entries, "Orders");
         barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         barDataSet.setValueTextColor(R.color.colorLayerDark);
         barDataSet.setValueTextSize(16f);
@@ -88,6 +95,5 @@ public class ChartRepresentingFragment extends Fragment {
         barChart.setData(barData);
         barChart.getDescription().setText("Bar chart example");
         barChart.animateY(2000);
-
     }
 }

@@ -18,6 +18,30 @@ public class User {
     public User() {
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setPass(String pass) {
+        this.pass = pass;
+    }
+
+    public void setJob(String job) {
+        this.job = job;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public void setBirthData(String birthData) {
+        this.birthData = birthData;
+    }
+
     public void setUserAuthId(String userAuthId) {
         this.userAuthId = userAuthId;
     }

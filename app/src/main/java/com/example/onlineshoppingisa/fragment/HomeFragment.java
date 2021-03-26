@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.onlineshoppingisa.R;
 import com.example.onlineshoppingisa.adapter.ProductAdapterGroup;
 import com.example.onlineshoppingisa.models.FashionDetails;
-import com.example.onlineshoppingisa.models.LabtopDetails;
+import com.example.onlineshoppingisa.models.LaptopDetails;
 import com.example.onlineshoppingisa.models.MobileDetails;
 import com.example.onlineshoppingisa.models.ProductDetailCardView;
 import com.example.onlineshoppingisa.models.ProductDetailCardViewGroup;
@@ -29,7 +29,7 @@ public class HomeFragment extends Fragment {
 
     private ArrayList<MobileDetails> mobileDetailsArrayList;
     private ArrayList<FashionDetails> fashionDetailsArrayList;
-    private ArrayList<LabtopDetails> laptopDetailsArrayList;
+    private ArrayList<LaptopDetails> laptopDetailsArrayList;
 
     public List<ProductDetailCardView> allProductDetailCardViews;
     private List<ProductDetailCardView> mobileProductDetailCardViews;
@@ -43,7 +43,7 @@ public class HomeFragment extends Fragment {
     }
 
     public HomeFragment(ArrayList<MobileDetails> mobileDetailsArrayList, ArrayList<FashionDetails> fashionDetailsArrayList,
-                        ArrayList<LabtopDetails> laptopDetailsArrayList) {
+                        ArrayList<LaptopDetails> laptopDetailsArrayList) {
         this.mobileDetailsArrayList = mobileDetailsArrayList;
         this.fashionDetailsArrayList = fashionDetailsArrayList;
         this.laptopDetailsArrayList = laptopDetailsArrayList;
@@ -60,6 +60,10 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment, container, false);
+        if (getActivity() != null) {
+            RecyclerView type = getActivity().findViewById(R.id.main_activity3_recycler_view_product_type);
+            type.setVisibility(View.VISIBLE);
+        }
         //xml
         RecyclerView recyclerView = view.findViewById(R.id.home_fragment_product);
         productAdapterGroup = new ProductAdapterGroup(getActivity(), productDetailCardViewGroups);
@@ -70,10 +74,10 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    public void initialProductDetailCardViews(Context context, ArrayList<MobileDetails> mobileDetailsArrayList, ArrayList<FashionDetails> fashionDetailsArrayList, ArrayList<LabtopDetails> labtopDetailsArrayList) {
+    public void initialProductDetailCardViews(Context context, ArrayList<MobileDetails> mobileDetailsArrayList, ArrayList<FashionDetails> fashionDetailsArrayList, ArrayList<LaptopDetails> laptopDetailsArrayList) {
         for (int i = 0; i < 10; i++) {
             MobileDetails mobileDetails = mobileDetailsArrayList.get(i);
-            LabtopDetails labtopDetails = labtopDetailsArrayList.get(i);
+            LaptopDetails laptopDetails = laptopDetailsArrayList.get(i);
             FashionDetails fashionDetails = fashionDetailsArrayList.get(i);
 
             ProductDetailCardView mobileItem = new ProductDetailCardView(mobileDetails.getKey(),context.getString(R.string.mobile_firebase), mobileDetails.getName(), mobileDetails.getPrice(), mobileDetails.getRating(),
@@ -82,8 +86,8 @@ public class HomeFragment extends Fragment {
             ProductDetailCardView fashionItem = new ProductDetailCardView(fashionDetails.getKey(),context.getString(R.string.fashion_firebase), fashionDetails.getName(), fashionDetails.getPrice(), fashionDetails.getRating(),
                     fashionDetails.getImage());
 
-            ProductDetailCardView labtopItem = new ProductDetailCardView(labtopDetails.getKey(),context.getString(R.string.labtop_firebase), labtopDetails.getName(), labtopDetails.getPrice(), labtopDetails.getRating(),
-                    labtopDetails.getImage());
+            ProductDetailCardView labtopItem = new ProductDetailCardView(laptopDetails.getKey(),context.getString(R.string.labtop_firebase), laptopDetails.getName(), laptopDetails.getPrice(), laptopDetails.getRating(),
+                    laptopDetails.getImage());
 
             allProductDetailCardViews.add(mobileItem);
             allProductDetailCardViews.add(fashionItem);

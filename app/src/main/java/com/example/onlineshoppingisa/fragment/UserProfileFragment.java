@@ -9,9 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.onlineshoppingisa.MainActivity;
 import com.example.onlineshoppingisa.R;
@@ -54,6 +56,11 @@ public class UserProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user_profile, container, false);
+
+        if (getActivity() != null) {
+            RecyclerView type = getActivity().findViewById(R.id.main_activity3_recycler_view_product_type);
+            type.setVisibility(View.GONE);
+        }
         FloatingActionButton mAddPhoto = view.findViewById(R.id.activity_user_profile_add_photo);
         Button submitBtn = view.findViewById(R.id.fragment_user_profile_submit);
 
@@ -73,11 +80,13 @@ public class UserProfileFragment extends Fragment {
 
     private void setUserDataFun() {
         User user = MainActivity.currentUser;
-        if (user.getUserImage() == null) {
+        Picasso.with(getActivity()).load(user.getUserImage()).placeholder(R.drawable.profile_image).into(mCircleImageView);
+        /*if (user.getUserImage() == null) {
             Picasso.with(getActivity()).load(R.drawable.profile_image).into(mCircleImageView);
         } else {
             Picasso.with(getActivity()).load(user.getUserImage()).into(mCircleImageView);
         }
+        */
         mUserName.setText(String.format("%s: %s", mUserName.getText(), user.getUserName()));
         mEmail.setText(String.format("%s: %s", mEmail.getText(), user.getEmail()));
         mJob.setText(String.format("%s: %s", mJob.getText(), user.getJob()));
@@ -107,11 +116,9 @@ public class UserProfileFragment extends Fragment {
 
     private void updateUserProfileImageFun(Uri uri) {
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-
         WriteBatch batch = firebaseFirestore.batch();
         DocumentReference documentReference = firebaseFirestore.collection("Users")
                 .document(MainActivity.currentUser.getIdKey());
-
         HashMap<String, Object> newValue = new HashMap<>();
         newValue.put("userImage", String.valueOf(uri));
 
@@ -122,17 +129,18 @@ public class UserProfileFragment extends Fragment {
 
     private void updateUserProfileFun() {
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-
         WriteBatch batch = firebaseFirestore.batch();
         DocumentReference documentReference = firebaseFirestore.collection("Users")
                 .document(MainActivity.currentUser.getIdKey());
-
+        MainActivity.currentUser.setUserName(mUserName.getText().toString().trim());
+        MainActivity.currentUser.setJob(mJob.getText().toString().trim());
         HashMap<String, Object> newValue = new HashMap<>();
         newValue.put("userName", mUserName.getText().toString());
         newValue.put("job", mJob.getText().toString());
-
         batch.update(documentReference, newValue);
         batch.commit()
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "onSuccess: 0000 success"));
+
+        Toast.makeText(getActivity(), "success", Toast.LENGTH_SHORT).show();
     }
 }

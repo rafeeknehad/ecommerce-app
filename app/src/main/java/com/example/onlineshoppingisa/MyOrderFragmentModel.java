@@ -10,11 +10,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.onlineshoppingisa.models.OrderDetails;
 import com.example.onlineshoppingisa.models.Orders;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,19 +63,16 @@ public class MyOrderFragmentModel extends AndroidViewModel {
         FirebaseFirestore.getInstance().collection("OrderDetails")
                 .document(MainActivity.currentUser.getUserAuthId())
                 .collection("OrderDetails")
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful() && task.getResult() != null) {
-                    for (QueryDocumentSnapshot snapshot : task.getResult()) {
-                        OrderDetails orderDetails = snapshot.toObject(OrderDetails.class);
-                        orderDetails.setOrderDetailsId(snapshot.getId());
-                        orderDetailsList.add(orderDetails);
+                .get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                            OrderDetails orderDetails = snapshot.toObject(OrderDetails.class);
+                            orderDetails.setOrderDetailsId(snapshot.getId());
+                            orderDetailsList.add(orderDetails);
+                        }
+                        mOrderDetailsLiveData.setValue(orderDetailsList);
                     }
-                    mOrderDetailsLiveData.setValue(orderDetailsList);
-                }
-            }
-        });
+                });
 
         return mOrderDetailsLiveData;
     }

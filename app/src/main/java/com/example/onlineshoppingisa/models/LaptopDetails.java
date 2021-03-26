@@ -5,8 +5,8 @@ import android.os.Parcelable;
 
 import com.google.firebase.firestore.Exclude;
 
-public class LabtopDetails implements Parcelable {
-    private String categouryId;
+public class LaptopDetails implements Parcelable {
+    private String categoryId;
     private String hardDisk;
     private String desc1;
     private String desc2;
@@ -16,11 +16,11 @@ public class LabtopDetails implements Parcelable {
     private String rating;
     private String key;
 
-    public LabtopDetails() {
+    public LaptopDetails() {
     }
 
-    protected LabtopDetails(Parcel in) {
-        categouryId = in.readString();
+    protected LaptopDetails(Parcel in) {
+        categoryId = in.readString();
         hardDisk = in.readString();
         desc1 = in.readString();
         desc2 = in.readString();
@@ -31,15 +31,15 @@ public class LabtopDetails implements Parcelable {
         key = in.readString();
     }
 
-    public static final Creator<LabtopDetails> CREATOR = new Creator<LabtopDetails>() {
+    public static final Creator<LaptopDetails> CREATOR = new Creator<LaptopDetails>() {
         @Override
-        public LabtopDetails createFromParcel(Parcel in) {
-            return new LabtopDetails(in);
+        public LaptopDetails createFromParcel(Parcel in) {
+            return new LaptopDetails(in);
         }
 
         @Override
-        public LabtopDetails[] newArray(int size) {
-            return new LabtopDetails[size];
+        public LaptopDetails[] newArray(int size) {
+            return new LaptopDetails[size];
         }
     };
 
@@ -80,8 +80,8 @@ public class LabtopDetails implements Parcelable {
         return key;
     }
 
-    public String getCategouryId() {
-        return categouryId;
+    public String getCategoryId() {
+        return categoryId;
     }
 
     @Override
@@ -91,7 +91,7 @@ public class LabtopDetails implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(categouryId);
+        dest.writeString(categoryId);
         dest.writeString(hardDisk);
         dest.writeString(desc1);
         dest.writeString(desc2);

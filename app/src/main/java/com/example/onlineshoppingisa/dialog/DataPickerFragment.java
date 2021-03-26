@@ -12,6 +12,7 @@ import java.util.Calendar;
 
 public class DataPickerFragment extends DialogFragment {
 
+    private Dialog dialog;
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -20,7 +21,11 @@ public class DataPickerFragment extends DialogFragment {
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
-        return new DatePickerDialog(getActivity(), (DatePickerDialog.OnDateSetListener) getActivity(),
-                year,month,day);
+
+        if (getActivity() != null) {
+            dialog = new DatePickerDialog(getActivity(), (DatePickerDialog.OnDateSetListener) getActivity(),
+                    year, month, day);
+        }
+        return dialog;
     }
 }

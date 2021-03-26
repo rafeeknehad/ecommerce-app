@@ -25,7 +25,7 @@ import com.example.onlineshoppingisa.R;
 import com.example.onlineshoppingisa.adapter.ProductAdapterGroup;
 import com.example.onlineshoppingisa.models.FashionDetails;
 import com.example.onlineshoppingisa.models.FlowChart;
-import com.example.onlineshoppingisa.models.LabtopDetails;
+import com.example.onlineshoppingisa.models.LaptopDetails;
 import com.example.onlineshoppingisa.models.MobileDetails;
 import com.example.onlineshoppingisa.models.OrderDetails;
 import com.example.onlineshoppingisa.models.Orders;
@@ -36,8 +36,7 @@ import com.example.onlineshoppingisa.roomdatabase.ProductRoom;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlacePicker;
-
+import com.google.android.gms.location.places.ui.PlacePicker.IntentBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -60,6 +59,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import static com.google.android.gms.location.places.ui.PlaceAutocomplete.getPlace;
 import static java.lang.Integer.parseInt;
 
 public class MyCartFragment extends Fragment {
@@ -69,7 +69,7 @@ public class MyCartFragment extends Fragment {
 
     private List<MobileDetails> mobileDetailsArrayList;
     private List<FashionDetails> fashionDetailsArrayList;
-    private List<LabtopDetails> laptopDetailsArrayList;
+    private List<LaptopDetails> laptopDetailsArrayList;
     public List<ProductDetailCardView> all;
     private List<ProductDetailCardView> mobileUserProductDetailCardViews;
     private List<ProductDetailCardView> laptopUserProductDetailCardViews;
@@ -104,7 +104,7 @@ public class MyCartFragment extends Fragment {
     }
 
     public MyCartFragment(ArrayList<MobileDetails> mobileDetailsArrayList, ArrayList<FashionDetails> fashionDetailsArrayList,
-                          ArrayList<LabtopDetails> laptopDetailsArrayList) {
+                          ArrayList<LaptopDetails> laptopDetailsArrayList) {
         this.mobileDetailsArrayList = mobileDetailsArrayList;
         this.fashionDetailsArrayList = fashionDetailsArrayList;
         this.laptopDetailsArrayList = laptopDetailsArrayList;
@@ -124,6 +124,10 @@ public class MyCartFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.my_cart_fragment, container, false);
+        if (getActivity() != null) {
+            RecyclerView type = getActivity().findViewById(R.id.main_activity3_recycler_view_product_type);
+            type.setVisibility(View.VISIBLE);
+        }
         mProductDataBaseModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(ProductDataBaseModel.class);
         Button buttonConfirm = view.findViewById(R.id.my_cart_fragment_btn);
         Button buttonLocation = view.findViewById(R.id.my_cart_fragment_set_location);
@@ -140,7 +144,7 @@ public class MyCartFragment extends Fragment {
     }
 
     private void setLocation() {
-        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+        IntentBuilder builder = new IntentBuilder();
         try {
             startActivityForResult(builder.build(Objects.requireNonNull(getActivity())), PLACE_PICKER_REQUEST);
         } catch (GooglePlayServicesRepairableException e) {
@@ -218,7 +222,7 @@ public class MyCartFragment extends Fragment {
                         }
                     }
                 } else if (item.getProductId().contains("labtop")) {
-                    for (LabtopDetails laptop : laptopDetailsArrayList) {
+                    for (LaptopDetails laptop : laptopDetailsArrayList) {
                         if (item.getProductId().equals(laptop.getKey())) {
                             totalPrice += parseInt(laptop.getPrice()) * item.getQuantity();
                             builder.append("Name: ").append(laptop.getName()).append("\n").append("Quantity: ").append(item.getQuantity()).append("\n")
@@ -330,7 +334,7 @@ public class MyCartFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == -1 && data != null) {
-                Place place = PlacePicker.getPlace(data, Objects.requireNonNull(getActivity()));
+                Place place = getPlace(Objects.requireNonNull(getActivity()), data);
                 String x = String.valueOf(place.getLatLng().latitude);
                 String y = String.valueOf(place.getLatLng().longitude);
                 getLocation(x, y);
@@ -394,7 +398,7 @@ public class MyCartFragment extends Fragment {
                         }
                     }
                 } else if (item.getProductId().contains("labtop")) {
-                    for (LabtopDetails laptop : laptopDetailsArrayList) {
+                    for (LaptopDetails laptop : laptopDetailsArrayList) {
                         if (item.getProductId().equals(laptop.getKey()) && (type.equals(getString(R.string.labtop_firebase)) || type.equals("All"))) {
                             totalPrice1 += parseInt(laptop.getPrice()) * item.getQuantity();
                             laptopUserProductDetailCardViews.add(new ProductDetailCardView(item.getProductId(),

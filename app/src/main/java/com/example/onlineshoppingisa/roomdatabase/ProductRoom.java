@@ -4,18 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 
-import com.example.onlineshoppingisa.models.ConfirmOrder;
-
 @Entity(primaryKeys = {"userId", "productId"})
 public class ProductRoom {
 
-    @NonNull
     private String userId;
 
-    @NonNull
     private String productId;
 
-    @NonNull
     private Integer quantity;
 
     @Ignore

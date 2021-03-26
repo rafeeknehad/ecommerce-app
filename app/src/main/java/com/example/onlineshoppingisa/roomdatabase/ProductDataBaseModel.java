@@ -21,13 +21,13 @@ public class ProductDataBaseModel extends AndroidViewModel {
         return productDataBase.productDao().getAllData(id);
     }
 
-    public void deleteDataForUser(String userId, String productId) {
+    /*public void deleteDataForUser(String userId, String productId) {
         productDataBase.productDao().deleteDataForUser(userId, productId);
     }
 
     public LiveData<ProductRoom> findProduct(String userId, String productId) {
         return productDataBase.productDao().findProduct(userId, productId);
-    }
+    }*/
 
     public void deleteAllOrderFromUser(String userId){
         productDataBase.productDao().deleteAllOrderFromUser(userId);

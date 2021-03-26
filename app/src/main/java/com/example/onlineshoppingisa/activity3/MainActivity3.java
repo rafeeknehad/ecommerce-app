@@ -25,7 +25,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.onlineshoppingisa.BottomSheetDialog;
+import com.example.onlineshoppingisa.dialog.BottomSheetDialog;
 import com.example.onlineshoppingisa.CaptureAct;
 import com.example.onlineshoppingisa.MainActivity;
 import com.example.onlineshoppingisa.R;
@@ -37,7 +37,7 @@ import com.example.onlineshoppingisa.fragment.MyCartFragment;
 import com.example.onlineshoppingisa.fragment.MyOrderFragment;
 import com.example.onlineshoppingisa.fragment.UserProfileFragment;
 import com.example.onlineshoppingisa.models.FashionDetails;
-import com.example.onlineshoppingisa.models.LabtopDetails;
+import com.example.onlineshoppingisa.models.LaptopDetails;
 import com.example.onlineshoppingisa.models.MobileDetails;
 import com.example.onlineshoppingisa.models.ProductDetailCardView;
 import com.example.onlineshoppingisa.models.ProductDetailCardViewGroup;
@@ -78,7 +78,7 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
     private ArrayList<MobileDetails> mobileDetailsArrayList;
     private ArrayList<FashionDetails> fashionDetailsArrayList;
     private ArrayList<ProductType> productTypeArrayList;
-    private ArrayList<LabtopDetails> laptopDetailsArrayList;
+    private ArrayList<LaptopDetails> laptopDetailsArrayList;
     public List<ProductDetailCardView> allProductDetailCardViews;
     private List<ProductDetailCardView> mobileProductDetailCardViews;
     private List<ProductDetailCardView> laptopProductDetailCardViews;
@@ -120,7 +120,7 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
         mainActivity3Model.getLiveData().observe(this, allCategory -> {
             mobileDetailsArrayList = new ArrayList<>(allCategory.getMobileDetailsList());
             fashionDetailsArrayList = new ArrayList<>(allCategory.getFashionDetailsList());
-            laptopDetailsArrayList = new ArrayList<>(allCategory.getLabtopDetails());
+            laptopDetailsArrayList = new ArrayList<>(allCategory.getLaptopDetails());
             productTypeArrayList = new ArrayList<>(allCategory.getProductTypeList());
             if (savedInstanceState == null) {
                 openHomeFragmentFun();
@@ -150,11 +150,13 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
         View viewHeader = navigationView.getHeaderView(0);
         TextView userName = viewHeader.findViewById(R.id.nav_header_user_name);
         CircleImageView userProfileImage = viewHeader.findViewById(R.id.nav_header_user_image);
+        Picasso.with(this).load(currentUser.getUserImage()).placeholder(R.drawable.profile_image).into(userProfileImage);
+        /*
         if (currentUser.getUserImage() != null) {
             Picasso.with(MainActivity3.this).load(currentUser.getUserImage()).into(userProfileImage);
         } else {
             Picasso.with(MainActivity3.this).load(R.drawable.profile_image).into(userProfileImage);
-        }
+        }*/
         userName.setText("hello " + currentUser.getUserName());
     }
 
@@ -255,7 +257,7 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
         allProductDetailCardViews.clear();
         for (int i = 0; i < 10; i++) {
             MobileDetails mobileDetails = mobileDetailsArrayList.get(i);
-            LabtopDetails labtopDetails = laptopDetailsArrayList.get(i);
+            LaptopDetails laptopDetails = laptopDetailsArrayList.get(i);
             FashionDetails fashionDetails = fashionDetailsArrayList.get(i);
 
             ProductDetailCardView mobileItem = new ProductDetailCardView(mobileDetails.getKey(), getString(R.string.mobile_firebase), mobileDetails.getName(), mobileDetails.getPrice(), mobileDetails.getRating(),
@@ -264,8 +266,8 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
             ProductDetailCardView fashionItem = new ProductDetailCardView(fashionDetails.getKey(), getString(R.string.fashion_firebase), fashionDetails.getName(), fashionDetails.getPrice(), fashionDetails.getRating(),
                     fashionDetails.getImage());
 
-            ProductDetailCardView laptopItem = new ProductDetailCardView(labtopDetails.getKey(), getString(R.string.labtop_firebase), labtopDetails.getName(), labtopDetails.getPrice(), labtopDetails.getRating(),
-                    labtopDetails.getImage());
+            ProductDetailCardView laptopItem = new ProductDetailCardView(laptopDetails.getKey(), getString(R.string.labtop_firebase), laptopDetails.getName(), laptopDetails.getPrice(), laptopDetails.getRating(),
+                    laptopDetails.getImage());
 
             allProductDetailCardViews.add(mobileItem);
             allProductDetailCardViews.add(fashionItem);
@@ -340,16 +342,16 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
                     }
                 }
             } else if (key.contains("labtop")) {
-                for (LabtopDetails labtopDetails : laptopDetailsArrayList) {
-                    if (labtopDetails.getKey().equals(key)) {
-                        Log.d(TAG, "getQrCodeFun: 0000 " + labtopDetails.getKey());
+                for (LaptopDetails laptopDetails : laptopDetailsArrayList) {
+                    if (laptopDetails.getKey().equals(key)) {
+                        Log.d(TAG, "getQrCodeFun: 0000 " + laptopDetails.getKey());
                         mBottomSheetDialog = new BottomSheetDialog(new ProductDetailCardView(
-                                labtopDetails.getKey(),
+                                laptopDetails.getKey(),
                                 getString(R.string.labtop_firebase),
-                                labtopDetails.getName(),
-                                labtopDetails.getPrice(),
-                                labtopDetails.getRating(),
-                                labtopDetails.getImage()
+                                laptopDetails.getName(),
+                                laptopDetails.getPrice(),
+                                laptopDetails.getRating(),
+                                laptopDetails.getImage()
                         ));
                         mBottomSheetDialog.show(getSupportFragmentManager(), "BottomSheet");
                         break;

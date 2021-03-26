@@ -59,9 +59,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         return productDetailCardViews.size();
     }
 
-    public void setAdapterInterface(ProductAdapterInterface mListener) {
+    /*public void setAdapterInterface(ProductAdapterInterface mListener) {
         this.productAdapterInterface = mListener;
-    }
+    }*/
 
     public interface ProductAdapterInterface {
         void productAdapterSetOnItemClickListener(ProductDetailCardView productDetailCardView, int pos);

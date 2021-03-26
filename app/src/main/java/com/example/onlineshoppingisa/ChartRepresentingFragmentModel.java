@@ -9,19 +9,14 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.onlineshoppingisa.models.FlowChart;
-import com.example.onlineshoppingisa.util.FlowChartRetrofit;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ChartRepresentingFragmentModel extends AndroidViewModel {
 
-    private static final String TAG = "ChartRepresentingFragme";
     private MutableLiveData<List<FlowChart>> liveData;
     private List<FlowChart> dataList;
 
@@ -32,7 +27,6 @@ public class ChartRepresentingFragmentModel extends AndroidViewModel {
     }
 
     public LiveData<List<FlowChart>> getAllChartOfUserOrder() {
-        Log.d(TAG, "getAllChartOfUserOrder: ////// " + MainActivity.currentUser.getUserAuthId());
         FirebaseFirestore.getInstance()
                 .collection("FlowChart")
                 .document(MainActivity.currentUser.getUserAuthId())

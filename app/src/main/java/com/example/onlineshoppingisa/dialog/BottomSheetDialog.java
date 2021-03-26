@@ -1,4 +1,4 @@
-package com.example.onlineshoppingisa;
+package com.example.onlineshoppingisa.dialog;
 
 import android.content.DialogInterface;
 import android.net.Uri;
@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.onlineshoppingisa.R;
 import com.example.onlineshoppingisa.models.ProductDetailCardView;
 import com.example.onlineshoppingisa.roomdatabase.ProductDataBase;
 import com.example.onlineshoppingisa.roomdatabase.ProductRoom;
@@ -37,10 +38,8 @@ public class BottomSheetDialog extends BottomSheetDialogFragment {
     private TextView mTextView;
     private Button mCancelOrder;
     private String mProductId;
-
     private ProductDataBase mProductRoom;
     private String userId;
-
     private ProductDetailCardView mProductDetailCardView;
     private BottomSheetDialogInt mBottomSheetDialogInt;
 
@@ -125,7 +124,6 @@ public class BottomSheetDialog extends BottomSheetDialogFragment {
                     .subscribe(new CompletableObserver() {
                         @Override
                         public void onSubscribe(Disposable d) {
-
                         }
 
                         @Override
@@ -138,6 +136,7 @@ public class BottomSheetDialog extends BottomSheetDialogFragment {
                             Log.d(TAG, "onError: ..... " + e.getMessage());
                         }
                     });
+            dismiss();
             Log.d(TAG, "addOrder: ..... Add");
         } else {
             Toast.makeText(getActivity(), "Quality equal to zero", Toast.LENGTH_SHORT).show();
@@ -164,6 +163,7 @@ public class BottomSheetDialog extends BottomSheetDialogFragment {
                         Log.d(TAG, "onError: ..... " + e.getMessage());
                     }
                 });
+        dismiss();
     }
 
     @Override
