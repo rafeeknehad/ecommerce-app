@@ -1,4 +1,4 @@
-package com.example.onlineshoppingisa.activity2;
+package com.example.onlineshoppingisa.sign_up;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -27,7 +27,6 @@ import java.util.Objects;
 
 public class MainActivity2 extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
-    //private static final String TAG = "MainActivity2";
     //ui
     private TextInputLayout emailText;
     private TextInputLayout userNameText;
@@ -83,8 +82,8 @@ public class MainActivity2 extends AppCompatActivity implements DatePickerDialog
                     if (task.isSuccessful()) {
                         user.setUserAuthId(firebaseAuth.getUid());
                         users.add(user);
-                        Toast.makeText(getApplicationContext(),"User Add",Toast.LENGTH_SHORT).show();
                         initialField();
+                        Toast.makeText(getApplicationContext(), "User Add", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(MainActivity2.this, MainActivity.class);
                         setResult(RESULT_OK, intent);
                         finish();
@@ -99,7 +98,10 @@ public class MainActivity2 extends AppCompatActivity implements DatePickerDialog
     }
 
     private Boolean validEmail() {
-        String email = Objects.requireNonNull(emailText.getEditText()).getText().toString().trim();
+        String email = "";
+        if (emailText.getEditText() != null) {
+            email = emailText.getEditText().getText().toString().trim();
+        }
         if (email.equals("")) {
             emailText.setErrorEnabled(true);
             emailText.setError("Field can't be empty");
@@ -110,7 +112,10 @@ public class MainActivity2 extends AppCompatActivity implements DatePickerDialog
     }
 
     private Boolean validUsername() {
-        String userName = Objects.requireNonNull(userNameText.getEditText()).getText().toString().trim();
+        String userName = "";
+        if (userNameText.getEditText() != null) {
+            userName = userNameText.getEditText().getText().toString().trim();
+        }
         if (userName.equals("")) {
             userNameText.setErrorEnabled(true);
             userNameText.setError("Field can't be empty");
@@ -147,7 +152,10 @@ public class MainActivity2 extends AppCompatActivity implements DatePickerDialog
     }
 
     private Boolean validJob() {
-        String job = Objects.requireNonNull(jobText.getEditText()).getText().toString().trim();
+        String job = "";
+        if (jobText.getEditText() != null) {
+            job = jobText.getEditText().getText().toString().trim();
+        }
         if (job.equals("")) {
             jobText.setErrorEnabled(true);
             jobText.setError("Field can't be empty");
@@ -161,14 +169,12 @@ public class MainActivity2 extends AppCompatActivity implements DatePickerDialog
         String text = dataOfBirth.getText().toString();
         if (text.equals(getString(R.string.data_of_birth))) {
             dataOfBirth.setError("Field can't be empty");
-
             return false;
         }
         dataOfBirth.setError("");
         dataOfBirth.setError(null);
         return true;
     }
-
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         Calendar calendar = Calendar.getInstance();

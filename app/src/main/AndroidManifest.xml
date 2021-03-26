@@ -27,7 +27,7 @@
             android:name=".activity3.MainActivity3"
             android:theme="@style/Theme.Design.Light.NoActionBar" />
         <activity
-            android:name=".activity2.MainActivity2"
+            android:name=".sign_up.MainActivity2"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".MainActivity"

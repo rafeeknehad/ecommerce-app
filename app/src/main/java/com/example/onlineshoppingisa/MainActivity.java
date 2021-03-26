@@ -12,17 +12,15 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.onlineshoppingisa.activity2.MainActivity2;
 import com.example.onlineshoppingisa.activity3.MainActivity3;
 import com.example.onlineshoppingisa.models.User;
+import com.example.onlineshoppingisa.sign_up.MainActivity2;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-
-import java.util.Objects;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -36,8 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private TextInputLayout passTxt;
 
     //variable
-    //private MainActivity2Model mainActivity2Model;
-    //private List<User> allDataOfUsers;
     private SharedPreferences sharedPreferences;
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
@@ -53,8 +49,6 @@ public class MainActivity extends AppCompatActivity {
         TextView forgetPass = findViewById(R.id.txt_forget_pass);
         CheckBox rememberMe = findViewById(R.id.remember_me);
         sharedPreferences = getSharedPreferences("rememberMe", MODE_PRIVATE);
-
-
         boolean rememberMeBoolean = sharedPreferences.getBoolean("checked", false);
         if (rememberMeBoolean) {
             String userName = sharedPreferences.getString("userName", null);
@@ -64,12 +58,10 @@ public class MainActivity extends AppCompatActivity {
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 getUserDataFun();
-                                /*Intent intent = new Intent(MainActivity.this, MainActivity3.class);
-                                startActivityForResult(intent, REQUEST_CODE);*/
                             }
                         });
         } else {
-            Toast.makeText(this, "Please Login IN", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please Login In", Toast.LENGTH_SHORT).show();
         }
         signBtn.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), MainActivity2.class);
@@ -93,26 +85,31 @@ public class MainActivity extends AppCompatActivity {
         });
         forgetPass.setOnClickListener(v -> {
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-            firebaseAuth.sendPasswordResetEmail(Objects.requireNonNull(emailTxt.getEditText()).getText().toString().trim())
-                    .addOnCompleteListener(task -> {
-                        if (task.isComplete()) {
-                            Toast.makeText(MainActivity.this, "Send Email", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+            if (emailTxt.getEditText() != null) {
+                firebaseAuth.sendPasswordResetEmail(emailTxt.getEditText().getText().toString().trim())
+                        .addOnCompleteListener(task -> {
+                            if (task.isComplete()) {
+                                Toast.makeText(MainActivity.this, "Send Email", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
         });
         rememberMe.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
+            if (isChecked && emailTxt.getEditText() != null && passTxt.getEditText() != null) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean("checked", true);
-                editor.putString("userName", Objects.requireNonNull(emailTxt.getEditText()).getText().toString().trim());
-                editor.putString("password", Objects.requireNonNull(passTxt.getEditText()).getText().toString().trim());
+                editor.putString("userName", emailTxt.getEditText().getText().toString().trim());
+                editor.putString("password", passTxt.getEditText().getText().toString().trim());
                 editor.apply();
             } else {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.clear();
+                editor.apply();
+                /*SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean("checked", false);
                 editor.putString("userName", "");
                 editor.putString("password", "");
-                editor.apply();
+                editor.apply();*/
             }
         });
     }
@@ -127,15 +124,15 @@ public class MainActivity extends AppCompatActivity {
                     for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                         currentUser = documentSnapshot.toObject(User.class);
                         currentUser.setIdKey(documentSnapshot.getId());
-                        Log.d(TAG, "onComplete: 0000 " + currentUser.getIdKey());
+                        Log.d(TAG, "onComplete: success " + currentUser.getIdKey());
+                        finish();
                         Intent intent = new Intent(MainActivity.this, MainActivity3.class);
                         startActivityForResult(intent, REQUEST_CODE);
                     }
                 } else {
-                    Log.d(TAG, "onComplete: 0000 error");
+                    Log.d(TAG, "onComplete: error");
                 }
             });
         }
-
     }
 }

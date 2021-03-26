@@ -1,10 +1,8 @@
 package com.example.onlineshoppingisa.fragment;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -14,9 +12,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.onlineshoppingisa.adapter.ProductAdapterGroup;
 import com.example.onlineshoppingisa.R;
-import com.example.onlineshoppingisa.activity3.MainActivity3Model;
+import com.example.onlineshoppingisa.adapter.ProductAdapterGroup;
 import com.example.onlineshoppingisa.models.FashionDetails;
 import com.example.onlineshoppingisa.models.LabtopDetails;
 import com.example.onlineshoppingisa.models.MobileDetails;
@@ -28,23 +25,18 @@ import java.util.List;
 
 public class HomeFragment extends Fragment {
 
-    private androidx.appcompat.widget.SearchView searchView;
-    private MenuItem menuItem;
 
-
-    private MainActivity3Model mainActivity3Model;
 
     private ArrayList<MobileDetails> mobileDetailsArrayList;
     private ArrayList<FashionDetails> fashionDetailsArrayList;
     private ArrayList<LabtopDetails> laptopDetailsArrayList;
 
-    private List<ProductDetailCardView> allProductDetailCardViews;
+    public List<ProductDetailCardView> allProductDetailCardViews;
     private List<ProductDetailCardView> mobileProductDetailCardViews;
-    private List<ProductDetailCardView> labtopProductDetailCardViews;
+    private ProductAdapterGroup productAdapterGroup;
     private List<ProductDetailCardView> fashionProductDetailCardViews;
     private List<ProductDetailCardViewGroup> productDetailCardViewGroups;
-
-    public static ProductAdapterGroup productAdapterGroup;
+    private List<ProductDetailCardView> laptopProductDetailCardViews;
 
 
     public HomeFragment() {
@@ -58,7 +50,7 @@ public class HomeFragment extends Fragment {
 
         allProductDetailCardViews = new ArrayList<>();
         mobileProductDetailCardViews = new ArrayList<>();
-        labtopProductDetailCardViews = new ArrayList<>();
+        laptopProductDetailCardViews = new ArrayList<>();
         fashionProductDetailCardViews = new ArrayList<>();
         productDetailCardViewGroups = new ArrayList<>();
 
@@ -99,7 +91,7 @@ public class HomeFragment extends Fragment {
 
             mobileProductDetailCardViews.add(mobileItem);
             fashionProductDetailCardViews.add(fashionItem);
-            labtopProductDetailCardViews.add(labtopItem);
+            laptopProductDetailCardViews.add(labtopItem);
         }
         createAdapterGroup(context);
     }
@@ -107,11 +99,15 @@ public class HomeFragment extends Fragment {
     private void createAdapterGroup(Context context) {
         productDetailCardViewGroups.add(new ProductDetailCardViewGroup(context.getString(R.string.mobile_firebase), mobileProductDetailCardViews));
         productDetailCardViewGroups.add(new ProductDetailCardViewGroup(context.getString(R.string.fashion_firebase), fashionProductDetailCardViews));
-        productDetailCardViewGroups.add(new ProductDetailCardViewGroup(context.getString(R.string.labtop_firebase), labtopProductDetailCardViews));
+        productDetailCardViewGroups.add(new ProductDetailCardViewGroup(context.getString(R.string.labtop_firebase), laptopProductDetailCardViews));
         setDataForProductAdapter(productDetailCardViewGroups);
     }
 
     public void setDataForProductAdapter(List<ProductDetailCardViewGroup> productDetailCardViewGroups) {
         productAdapterGroup.setList(productDetailCardViewGroups);
+    }
+
+    public ProductAdapterGroup getProductAdapterGroup() {
+        return productAdapterGroup;
     }
 }

@@ -1,7 +1,6 @@
 package com.example.onlineshoppingisa.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +37,7 @@ public class ProductAdapterGroup extends RecyclerView.Adapter<ProductAdapterGrou
     @NonNull
     @Override
     public ProductAdapterGroupViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_detail_cardview_group, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_detail_card_view_group, parent, false);
         return new ProductAdapterGroupViewHolder(view);
     }
 

@@ -20,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
-import androidx.core.view.MenuItemCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -96,25 +95,13 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main3);
         sharedPreferences = getSharedPreferences("rememberMe", MODE_PRIVATE);
-        selectCategory = "All";
+        initialVariable();
 
-        //initial variable
-        mobileDetailsArrayList = new ArrayList<>();
-        fashionDetailsArrayList = new ArrayList<>();
-        productTypeArrayList = new ArrayList<>();
-        laptopDetailsArrayList = new ArrayList<>();
-        allProductDetailCardViews = new ArrayList<>();
-        mobileProductDetailCardViews = new ArrayList<>();
-        laptopProductDetailCardViews = new ArrayList<>();
-        fashionProductDetailCardViews = new ArrayList<>();
-        productDetailCardViewGroups = new ArrayList<>();
         MainActivity3Model mainActivity3Model = ViewModelProviders.of(this).get(MainActivity3Model.class);
         productDataBase = ProductDataBase.grtInstance(MainActivity3.this);
 
         //initial xml
         productTypeRecyclerView = findViewById(R.id.main_activity3_recycler_view_product_type);
-
-        //ui
         Toolbar toolbar = findViewById(R.id.drawer_layout_toolbar);
         drawerLayout = findViewById(R.id.drawerlayout_id);
         navigationView = findViewById(R.id.drawer_layout_nav_view);
@@ -125,14 +112,12 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
                 toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         navigationView.setNavigationItemSelectedListener(this);
+        //drawerLayout.setDrawerListener(this);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
-        drawerLayout.setDrawerListener(this);
 
         actionBarDrawerToggle.syncState();
         setTheDrawerHeaderFun();
-        myCartFragment = new MyCartFragment();
         mainActivity3Model.getLiveData().observe(this, allCategory -> {
-            Toast.makeText(getApplicationContext(), "" + allCategory.getLabtopDetails().size(), Toast.LENGTH_LONG).show();
             mobileDetailsArrayList = new ArrayList<>(allCategory.getMobileDetailsList());
             fashionDetailsArrayList = new ArrayList<>(allCategory.getFashionDetailsList());
             laptopDetailsArrayList = new ArrayList<>(allCategory.getLabtopDetails());
@@ -146,14 +131,30 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
         });
     }
 
+    private void initialVariable() {
+        selectCategory = "All";
+        mobileDetailsArrayList = new ArrayList<>();
+        fashionDetailsArrayList = new ArrayList<>();
+        productTypeArrayList = new ArrayList<>();
+        laptopDetailsArrayList = new ArrayList<>();
+        allProductDetailCardViews = new ArrayList<>();
+        mobileProductDetailCardViews = new ArrayList<>();
+        laptopProductDetailCardViews = new ArrayList<>();
+        fashionProductDetailCardViews = new ArrayList<>();
+        productDetailCardViewGroups = new ArrayList<>();
+    }
+
     //set the data of the user in the header of the drawer layout
     @SuppressLint("SetTextI18n")
     private void setTheDrawerHeaderFun() {
-        Log.d(TAG, "setTheDrawerHeaderFun: 0000 " + currentUser.getIdKey() + " " + currentUser.getUserName());
         View viewHeader = navigationView.getHeaderView(0);
         TextView userName = viewHeader.findViewById(R.id.nav_header_user_name);
         CircleImageView userProfileImage = viewHeader.findViewById(R.id.nav_header_user_image);
-        Picasso.with(MainActivity3.this).load(currentUser.getUserImage()).into(userProfileImage);
+        if (currentUser.getUserImage() != null) {
+            Picasso.with(MainActivity3.this).load(currentUser.getUserImage()).into(userProfileImage);
+        } else {
+            Picasso.with(MainActivity3.this).load(R.drawable.profile_image).into(userProfileImage);
+        }
         userName.setText("hello " + currentUser.getUserName());
     }
 
@@ -200,6 +201,52 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
         }
     }
 
+    private void search(MenuItem item) {
+        searchView = (androidx.appcompat.widget.SearchView) menuItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (getSupportFragmentManager().findFragmentById(R.id.main_activity3_fragment) instanceof HomeFragment) {
+                    homeFragment.getProductAdapterGroup().getFilter().filter(newText);
+                } else if (getSupportFragmentManager().findFragmentById(R.id.main_activity3_fragment) instanceof MyCartFragment) {
+                    myCartFragment.getProductAdapterGroup().getFilter().filter(newText);
+                }
+                return true;
+            }
+        });
+        item.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                menuItem1.setVisible(true);
+                menuItem2.setVisible(true);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                menuItem1.setVisible(false);
+                menuItem2.setVisible(false);
+                return true;
+            }
+        });
+        /*MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return false;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                return false;
+            }
+        });*/
+    }
+
     //put each type of the product in the array list to create a recycler view
     private void initialProductDetailCardViews() {
         mobileProductDetailCardViews.clear();
@@ -217,16 +264,16 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
             ProductDetailCardView fashionItem = new ProductDetailCardView(fashionDetails.getKey(), getString(R.string.fashion_firebase), fashionDetails.getName(), fashionDetails.getPrice(), fashionDetails.getRating(),
                     fashionDetails.getImage());
 
-            ProductDetailCardView labtopItem = new ProductDetailCardView(labtopDetails.getKey(), getString(R.string.labtop_firebase), labtopDetails.getName(), labtopDetails.getPrice(), labtopDetails.getRating(),
+            ProductDetailCardView laptopItem = new ProductDetailCardView(labtopDetails.getKey(), getString(R.string.labtop_firebase), labtopDetails.getName(), labtopDetails.getPrice(), labtopDetails.getRating(),
                     labtopDetails.getImage());
 
             allProductDetailCardViews.add(mobileItem);
             allProductDetailCardViews.add(fashionItem);
-            allProductDetailCardViews.add(labtopItem);
+            allProductDetailCardViews.add(laptopItem);
 
             mobileProductDetailCardViews.add(mobileItem);
             fashionProductDetailCardViews.add(fashionItem);
-            laptopProductDetailCardViews.add(labtopItem);
+            laptopProductDetailCardViews.add(laptopItem);
         }
     }
 
@@ -247,6 +294,32 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
                 .commit();
     }
 
+    //open the home fragment
+    private void openHomeFragmentFun() {
+        navigationView.setCheckedItem(R.id.drawer_menu_home);
+        homeFragment = new HomeFragment(mobileDetailsArrayList, fashionDetailsArrayList, laptopDetailsArrayList);
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_activity3_fragment, homeFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    //open the cart fragment
+    private void openMyCartFragmentFun() {
+        navigationView.setCheckedItem(R.id.my_cart);
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_activity3_fragment, myCartFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    //open the chartRepresentation fragment
+    private void openChartRepresentationFun() {
+        ChartRepresentingFragment chartRepresentingFragment = new ChartRepresentingFragment();
+        navigationView.setCheckedItem(R.id.my_chart);
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_activity3_fragment, chartRepresentingFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
     //get the QR code result
     private void getQrCodeFun(IntentResult result) {
         if (result.getContents() != null) {
@@ -254,7 +327,6 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
             if (key.contains("Fashion")) {
                 for (FashionDetails fashionDetails : fashionDetailsArrayList) {
                     if (fashionDetails.getKey().equals(key)) {
-                        Log.d(TAG, "getQrCodeFun: 0000 " + fashionDetails.getKey());
                         mBottomSheetDialog = new BottomSheetDialog(new ProductDetailCardView(
                                 fashionDetails.getKey(),
                                 getString(R.string.fashion_firebase),
@@ -301,35 +373,8 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
                     }
                 }
             }
-            mBottomSheetDialog.setBottomSheetDialogInt(() -> {
-                Log.d(TAG, "getQrCodeFun: 0000 onDismiss");
-            });
+            mBottomSheetDialog.setBottomSheetDialogInt(() -> Log.d(TAG, "getQrCodeFun: 0000 onDismiss"));
         }
-    }
-
-    //open the home fragment
-    private void openHomeFragmentFun() {
-        navigationView.setCheckedItem(R.id.drawer_menu_home);
-        homeFragment = new HomeFragment(mobileDetailsArrayList, fashionDetailsArrayList, laptopDetailsArrayList);
-        getSupportFragmentManager().beginTransaction().replace(R.id.main_activity3_fragment, homeFragment)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    //open the cart fragment
-    private void openMyCartFragmentFun() {
-        navigationView.setCheckedItem(R.id.my_cart);
-        getSupportFragmentManager().beginTransaction().replace(R.id.main_activity3_fragment, myCartFragment)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    private void openChartRepresentationFun() {
-        ChartRepresentingFragment chartRepresentingFragment = new ChartRepresentingFragment();
-        navigationView.setCheckedItem(R.id.my_chart);
-        getSupportFragmentManager().beginTransaction().replace(R.id.main_activity3_fragment, chartRepresentingFragment)
-                .addToBackStack(null)
-                .commit();
     }
 
     @Override
@@ -372,40 +417,7 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.home_menu_search:
-                searchView = (androidx.appcompat.widget.SearchView) menuItem.getActionView();
-                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                    @Override
-                    public boolean onQueryTextSubmit(String query) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onQueryTextChange(String newText) {
-                        Log.d(TAG, "onQueryTextChange: 0000 " + newText);
-                        if (getSupportFragmentManager().findFragmentById(R.id.main_activity3_fragment) instanceof HomeFragment) {
-                            HomeFragment.productAdapterGroup.getFilter().filter(newText);
-                        } else if (getSupportFragmentManager().findFragmentById(R.id.main_activity3_fragment) instanceof MyCartFragment) {
-                            Log.d(TAG, "onQueryTextChange: 0000 e7na hena");
-                            MyCartFragment.productAdapterGroup.getFilter().filter(newText);
-                        }
-                        return true;
-                    }
-                });
-                MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
-                    @Override
-                    public boolean onMenuItemActionExpand(MenuItem item) {
-                        menuItem1.setVisible(true);
-                        menuItem2.setVisible(true);
-                        return true;
-                    }
-
-                    @Override
-                    public boolean onMenuItemActionCollapse(MenuItem item) {
-                        menuItem1.setVisible(false);
-                        menuItem2.setVisible(false);
-                        return true;
-                    }
-                });
+                search(item);
                 break;
             case R.id.home_menu_voice:
                 speak();
@@ -429,7 +441,7 @@ public class MainActivity3 extends AppCompatActivity implements ProductAdapter.P
                 ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                 if (result != null) {
                     searchView.setQuery(result.get(0), false);
-                    HomeFragment.productAdapterGroup.getFilter().filter(result.get(0));
+                    homeFragment.getProductAdapterGroup().getFilter().filter(result.get(0));
                 }
             }
         }

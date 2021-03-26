@@ -37,11 +37,9 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.IOException;
@@ -79,7 +77,7 @@ public class MyCartFragment extends Fragment {
     private List<ProductDetailCardViewGroup> productUserDetailCardViewGroups;
     private List<ProductRoom> mProductRoomList;
 
-    public static ProductAdapterGroup productAdapterGroup;
+    private ProductAdapterGroup productAdapterGroup;
     private ProductDataBaseModel mProductDataBaseModel;
 
 
@@ -193,6 +191,7 @@ public class MyCartFragment extends Fragment {
 
     @SuppressLint("SetTextI18n")
     public void showUserProduct() {
+        StringBuilder builder = new StringBuilder();
         mUserProduct = "";
         totalPrice = 0;
         DecimalFormat format = new DecimalFormat("###,###,###.00");
@@ -207,9 +206,10 @@ public class MyCartFragment extends Fragment {
                     for (MobileDetails mobile : mobileDetailsArrayList) {
                         if (item.getProductId().equals(mobile.getKey())) {
                             totalPrice += parseInt(mobile.getPrice()) * item.getQuantity();
-                            mUserProduct += "Name: " + mobile.getName() + "\n" + "Quantity: " + item.getQuantity() + "\n" +
-                                    "Total price: " + format.format(parseInt(mobile.getPrice()) * item.getQuantity())
-                                    + "$" + "\n-----------------------------------------------------------------";
+                            builder.append("Name: ").append(mobile.getName()).append("\n").append("Quantity: ").append(item.getQuantity()).append("\n")
+                                    .append("Total price: ").append(format.format(parseInt(mobile.getPrice()) * item.getQuantity())).append("$")
+                                    .append("\n-----------------------------------------------------------------");
+                            //mUserProduct = mUserProduct + "Name: " + mobile.getName() + "\n" + "Quantity: " + item.getQuantity() + "\n" + "Total price: " + format.format(parseInt(mobile.getPrice()) * item.getQuantity()) + "$" + "\n-----------------------------------------------------------------";
                             mobileUserProductDetailCardViews.add(new ProductDetailCardView(item.getProductId(),
                                     getActivity().getResources().getString(R.string.mobile_firebase),
                                     mobile.getName(), mobile.getPrice(), mobile.getRating(),
@@ -221,10 +221,12 @@ public class MyCartFragment extends Fragment {
                     for (LabtopDetails laptop : laptopDetailsArrayList) {
                         if (item.getProductId().equals(laptop.getKey())) {
                             totalPrice += parseInt(laptop.getPrice()) * item.getQuantity();
-                            mUserProduct = mUserProduct + ("Name: " + laptop.getName() + "\n" + "Quantity: " + item.getQuantity() + "\n" +
+                            builder.append("Name: ").append(laptop.getName()).append("\n").append("Quantity: ").append(item.getQuantity()).append("\n")
+                                    .append("Total price: ").append(format.format(parseInt(laptop.getPrice()) * item.getQuantity())).append("$")
+                                    .append("\n-----------------------------------------------------------------");
+                            /*mUserProduct = mUserProduct + ("Name: " + laptop.getName() + "\n" + "Quantity: " + item.getQuantity() + "\n" +
                                     "Total price: " + format.format(parseInt(laptop.getPrice()) * item.getQuantity())
-                                    + "$" + "\n-----------------------------------------------------------------");
-
+                                    + "$" + "\n-----------------------------------------------------------------");*/
                             laptopUserProductDetailCardViews.add(new ProductDetailCardView(item.getProductId(),
                                     getActivity().getResources().getString(R.string.labtop_firebase),
                                     laptop.getName(), laptop.getPrice(), laptop.getRating(),
@@ -236,11 +238,14 @@ public class MyCartFragment extends Fragment {
                     for (FashionDetails fashion : fashionDetailsArrayList) {
                         if (item.getProductId().equals(fashion.getKey())) {
                             totalPrice += parseInt(fashion.getPrice()) * item.getQuantity();
+                            builder.append("Name: ").append(fashion.getName()).append("\n").append("Quantity: ").append(item.getQuantity()).append("\n")
+                                    .append("Total price: ").append(format.format(parseInt(fashion.getPrice()) * item.getQuantity())).append("$")
+                                    .append("\n-----------------------------------------------------------------");
+                            /*
                             mUserProduct = mUserProduct + ("Name: " + fashion.getName() + "\n" +
                                     "Quantity: " + item.getQuantity() + "\n" +
                                     "Total price: " + format.format(parseInt(fashion.getPrice()) * item.getQuantity())
-                                    + "$" + "\n-----------------------------------------------------------------");
-
+                                    + "$" + "\n-----------------------------------------------------------------");*/
                             fashionUserProductDetailCardViews.add(new ProductDetailCardView(item.getProductId(),
                                     getActivity().getResources().getString(R.string.fashion_firebase),
                                     fashion.getName(), fashion.getPrice(), fashion.getRating(),
@@ -250,6 +255,7 @@ public class MyCartFragment extends Fragment {
                     }
                 }
             }
+            mUserProduct = builder.toString();
             mTotalPrice.setText("Total Price: " + format.format(totalPrice) + " $");
             all.addAll(mobileUserProductDetailCardViews);
             all.addAll(laptopUserProductDetailCardViews);
@@ -288,7 +294,7 @@ public class MyCartFragment extends Fragment {
 
     private void addToFlowChartRep() {
         Calendar c = Calendar.getInstance();
-        int year = c.get(Calendar.YEAR);
+        //int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);
         Log.d(TAG, "addToFlowChartRep: 0000 " + month);
         FirebaseFirestore.getInstance()
@@ -296,12 +302,7 @@ public class MyCartFragment extends Fragment {
                 .document(MainActivity.currentUser.getUserAuthId())
                 .collection("Orders")
                 .add(new FlowChart(mOrderId))
-                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentReference> task) {
-                        Log.d(TAG, "onComplete: ///// "+task.isSuccessful());
-                    }
-                });
+                .addOnCompleteListener(task -> Log.d(TAG, "onComplete: ///// "+task.isSuccessful()));
     }
 
     private void setOrderDetails() {
@@ -369,6 +370,7 @@ public class MyCartFragment extends Fragment {
         showUserProduct();
     }
 
+    @SuppressLint("SetTextI18n")
     public void setDataForProductAdapter(String type) {
         totalPrice1 = 0;
         DecimalFormat format = new DecimalFormat("###,###,###.00");
@@ -427,5 +429,9 @@ public class MyCartFragment extends Fragment {
                 productUserDetailCardViewGroups.add(new ProductDetailCardViewGroup(getActivity().getString(R.string.labtop_firebase), laptopUserProductDetailCardViews));
             productAdapterGroup.setList(productUserDetailCardViewGroups);
         });
+    }
+
+    public ProductAdapterGroup getProductAdapterGroup() {
+        return productAdapterGroup;
     }
 }

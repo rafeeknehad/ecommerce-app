@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity2.MainActivity2"
+    tools:context=".sign_up.MainActivity2"
     android:background="@android:color/darker_gray">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -127,17 +127,18 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="10dp"
                 app:passwordToggleEnabled="true">
+
                 <EditText
                     android:imeOptions="actionNext"
                     android:inputType="numberPassword"
                     android:textColor="@color/colorTextPrimary"
                     android:textSize="15sp"
-                    tools:ignore="Autofill"
                     android:drawablePadding="5dp"
                     android:drawableStart="@drawable/ic_baseline_lock_24"
                     android:hint="@string/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autofillHints=""
                     android:drawableLeft="@drawable/ic_baseline_lock_24" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -224,6 +225,7 @@
                 android:background="@color/colorTextHint"/>
 
             <TextView
+                android:drawableEnd="@drawable/ic_baseline_calendar_today_24"
                 android:id="@+id/main_activity2_data_birth"
                 android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
@@ -234,7 +236,11 @@
                 android:text="@string/data_of_birth"
                 android:textColor="@color/colorTextPrimary"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:drawableRight="@drawable/ic_baseline_calendar_today_24"
+                android:drawablePadding="10dp"
+                android:textStyle="bold"
+                app:drawableEndCompat="@drawable/ic_baseline_calendar_today_24"
+                tools:ignore="UseCompatTextViewDrawableXml" />
 
             <Button
                 android:id="@+id/main_activity2_sign_up_btn"
